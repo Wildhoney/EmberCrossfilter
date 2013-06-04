@@ -6,10 +6,10 @@ Instead of using Ember DataStore, EmberCrossfilter provides a basic architecture
 Why choose Crossfilter?
 -------------
 
-Crossfilter uses JavaScript's typed arrays to allow for much quicker sorting and filtering. It is proven to be numerous times faster than native JavaScript filtering methods; therefore when large amounts of data are involved, Crossfilter is provides a much better user experience.* It allows you to create up to 32 dimensions
+Crossfilter uses JavaScript's typed arrays to allow for much quicker sorting and filtering. It is proven to be numerous times faster than native JavaScript filtering methods; therefore when large amounts of data is involved, Crossfilter is provides a much better user experience.
 
 
-Then what is EmberCrossfilter?
+What is EmberCrossfilter?
 -------------
 
 I've created EmberCrossfilter to allow a simple configuration to drive the automatic creation of Crossfilter dimensions, and two methods for applying and clearing filters.
