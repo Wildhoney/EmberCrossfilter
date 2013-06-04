@@ -18,9 +18,16 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @constructor
      */
     init: function() {
+
         this._super();
+
+        // Assert that we have the `filterMap` property for configuring EmberCrossfilter.
+        Ember.assert('Controller implements EmberCrossfilter but `filterMap` has not been specified.', !!this.filterMap);
+
+        // Create the Crossfilter, and finally create the dimensions.
         this._crossfilter = crossfilter(this.get('content'));
         this._createDimensions();
+
     },
 
     /**
@@ -93,6 +100,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
                     return d[property];
                 })
             });
+
         };
 
         // Define our default dimension, which is the primary key of the collection (id).

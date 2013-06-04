@@ -41,18 +41,18 @@ This `filterMap` creates a total of 3 dimensions (`colour`, `age`, and `name`):
         <td>Crossfilter method</td>
     </tr>
     <tr>
-	<td>`colours`</td>
-	<td>`colour`</td>
-	<td>`filterInArray`</td>
+	<td><code>colours`</td>
+	<td><code>colour`</td>
+	<td><code>filterInArray`</td>
     </tr>
     <tr>
-	<td>`age`</td>
-	<td>`age`</td>
-	<td>`filterRange`</td>
+	<td><code>age`</td>
+	<td><code>age`</td>
+	<td><code>filterRange`</td>
     </tr>
     <tr>
-	<td>`name`</td>
-	<td>`name`</td>
-	<td>`filterExact`</td>
+	<td><code>name</code></td>
+	<td><code>name</code></td>
+	<td><code>filterExact</code></td>
     </tr>
 </table>
