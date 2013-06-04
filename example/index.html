@@ -1,0 +1,67 @@
+<html>
+<head>
+
+    <title>EmberCrossfilter by Wildhoney</title>
+
+    <script type="text/javascript" src="../lib/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="../lib/handlebars-1.0.rc.4.js"></script>
+    <script type="text/javascript" src="../lib/ember-1.0.0-rc.5.js"></script>
+    <script type="text/javascript" src="../lib/crossfilter-1.2.0.js"></script>
+
+    <script type="text/javascript" src="scripts/default.js"></script>
+    <script type="text/javascript" src="../packages/ember-crossfilter/ember-crossfilter.js"></script>
+    <script type="text/javascript" src="scripts/model.js"></script>
+    <script type="text/javascript" src="scripts/controller.js"></script>
+    <script type="text/javascript" src="scripts/view.js"></script>
+
+    <style type="text/css">
+
+        ul li ul { margin-bottom: 20px; }
+        ul li.details { list-style: none; }
+        a { color: blue; text-decoration: underline; cursor: pointer; }
+        a:active { color: black; }
+
+    </style>
+
+</head>
+<body>
+
+    <script type="text/x-handlebars">
+        {{outlet}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="cats">
+
+        <h1>Apply Filters</h1>
+
+        <ul>
+            <li class="details">
+                <ul>
+                    <li>{{#view view.Filter key="colour" value="black"}}Cats who are coloured black{{/view}}</li>
+                    <li>{{#view view.Filter key="age" value=",8" isArray=true}}Cats who are younger than 8{{/view}}</li>
+                    <li>{{#view view.Filter key="age" value="5," isArray=true}}Cats who are older than 5{{/view}}</li>
+                    <li>{{#view view.Filter key="name" value="Boris"}}Cats who are called Boris{{/view}}</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h1>We have {{content.length}} cats</h1>
+
+        <ul>
+            {{#each controller}}
+
+                <li>Name: {{name}}</li>
+                <li class="details">
+                    <ul>
+                        <li>Age: {{age}}</li>
+                        <li>Colours: {{colours}}</li>
+                    </ul>
+                </li>
+
+            {{/each}}
+        </ul>
+
+    </script>
+
+</body>
+</html>
