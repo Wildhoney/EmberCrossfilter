@@ -54,6 +54,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
                 // Use the jQuery inArray method if we've defined a filterInArray.
                 case ('filterInArray')  : this._setFilterInArray(map, dimension); break;
 
+                // Invoked when we're handling a filterRange dimension.
+                case ('filterRangeMin')  : this._setFilterRangeMin(map, dimension); break;
+                case ('filterRangeMax')  : this._setFilterRangeMax(map, dimension); break;
+
                 // We need to apply a special callback if we're dealing with a filterFunction.
                 case ('filterFunction') : this._setFilterFunction(map, dimension); break;
 
@@ -94,6 +98,11 @@ window.EmberCrossfilter = Ember.Mixin.create({
          */
         var defineProperty = function defineProperty(name, property) {
 
+            if (this[name]) {
+                // We've already defined this dimension (probably a filterRange).
+                return;
+            }
+
             // Define the property using the JS 1.8.5 way.
             Object.defineProperty(this, name, {
                 enumerable: false,
@@ -115,6 +124,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
                 continue;
             }
 
+            // Add the name property to the filterMap method for using in setFilterRangeMin/setFilterRangeMax.
+            this.filterMap[filter].name = filter;
+
+            // Reduce this iteration to a simpler variable.
             filter = this.filterMap[filter];
 
             // Define the defined dimension in the controller.
@@ -150,17 +163,6 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * @method addArrayFilter
-     * Used for providing the values for a filterRange.
-     * @param key
-     * @param firstValue
-     * @param secondValue
-     */
-    addArrayFilter: function(key, firstValue, secondValue) {
-        this.addFilter(key, [firstValue, secondValue]);
-    },
-
-    /**
      * @method clearFilter
      * Clear the any applied filters to the dimension.
      * @param key
@@ -179,9 +181,11 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @private
      */
     _setFilterInArray: function(map, dimension) {
+
         dimension.filterFunction(function(d) {
             return $.inArray(map.value, d) !== -1;
         });
+
     },
 
     /**
@@ -194,9 +198,54 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @private
      */
     _setFilterFunction: function(map, dimension) {
+
         var methodName = '_apply%@'.fmt(map.dimension.capitalize());
         Ember.assert('Crossfilter `filterFunction` expects a callback named `%@`.'.fmt(methodName), !!Ember.canInvoke(this, methodName));
         dimension.filterFunction(this[methodName]);
+
+    },
+
+    /**
+     * @method _setFilterRangeMin
+     * @param map
+     * @param dimension
+     * Checks the corresponding dimension for the minimum value, and then continues to create
+     * the array for the filterRange.
+     * @private
+     */
+    _setFilterRangeMin: function(map, dimension) {
+
+        var minName = map.name.replace('min', 'max');
+
+        // Assert that we can find the opposite dimension.
+        Ember.assert('You must specify define the `max` dimension for %@'.fmt(map.name), !!this.filterMap[minName]);
+
+        // Apply the filter using the existing maximum value, if it exists.
+        var minValue = this.filterMap[minName].value;
+        dimension.filterRange([minValue || -Infinity, map.value]);
+
+    },
+
+
+    /**
+     * @method _setFilterRangeMax
+     * @param map
+     * @param dimension
+     * Checks the corresponding dimension for the maximum value, and then continues to create
+     * the array for the filterRange.
+     * @private
+     */
+    _setFilterRangeMax: function(map, dimension) {
+
+        var maxName = map.name.replace('max', 'min');
+
+        // Assert that we can find the opposite dimension.
+        Ember.assert('You must specify define the `min` dimension for %@'.fmt(map.name), !!this.filterMap[maxName]);
+
+        // Apply the filter using the existing minimum value, if it exists.
+        var minValue = this.filterMap[maxName].value;
+        dimension.filterRange([map.value, minValue || Infinity]);
+
     }
 
 });

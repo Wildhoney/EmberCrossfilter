@@ -38,8 +38,8 @@
             <li class="details">
                 <ul>
                     <li>{{#view view.Filter key="colour" value="black"}}Cats who are coloured black{{/view}}</li>
-                    <li>{{#view view.Filter key="age" value=",8" isArray=true}}Cats who are younger than 8{{/view}}</li>
-                    <li>{{#view view.Filter key="age" value="5," isArray=true}}Cats who are older than 5{{/view}}</li>
+                    <li>{{#view view.Filter key="minAge" value=8}}Cats who are younger than 8{{/view}}</li>
+                    <li>{{#view view.Filter key="maxAge" value=5}}Cats who are older than 5{{/view}}</li>
                     <li>{{#view view.Filter key="name" value="Boris"}}Cats who are called Boris{{/view}}</li>
                     <li>{{#view view.Filter key="isCute" value="Boris"}}Cats who are considered to be cute{{/view}}</li>
                 </ul>
