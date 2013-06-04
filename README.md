@@ -27,12 +27,14 @@ EmberCrossfilter can be configured with one configuration object (`filterMap`).
 In the bundled example we have the following configuration:
 
 	filterMap: {
-		colour:   { property: 'colours', dimension: 'colour',  method: 'filterInArray', value: null },
-		age:      { property: 'age', dimension: 'age', method: 'filterRange', value: [] },
-		name:     { property: 'name', dimension: 'name', method: 'filterExact', value: null  }
+		colour: { property: 'colours', dimension: 'colour',  method: 'filterInArray', value: null },
+		minAge: { property: 'age', dimension: 'age', method: 'filterRangeMin', value: null },
+		maxAge: { property: 'age', dimension: 'age', method: 'filterRangeMax', value: null },
+		name:   { property: 'name', dimension: 'name', method: 'filterExact', value: null  },
+		isCute: { property: 'cuteness', dimension: 'cuteness', method: 'filterFunction', value: null }
 	}
 	
-This `filterMap` creates a total of 3 dimensions (`colour`, `age`, and `name`):
+This `filterMap` creates a total of 4 dimensions (`colour`, `age`, and `name`):
 
 <table>
     <tr>
@@ -41,14 +43,24 @@ This `filterMap` creates a total of 3 dimensions (`colour`, `age`, and `name`):
         <td>Crossfilter method</td>
     </tr>
     <tr>
+	<td><code>minAge</code></td>
+	<td><code>age</code></td>
+	<td><code>filterRange</code></td>
+    </tr>
+    <tr>
+	<td><code>maxAge</code></td>
+	<td><code>age</code></td>
+	<td><code>filterRange</code></td>
+    </tr>
+    <tr>
+	<td><code>name</code></td>
+	<td><code>name</code></td>
+	<td><code>filterExact</code></td>
+    </tr>
+    <tr>
 	<td><code>colours`</td>
 	<td><code>colour`</td>
 	<td><code>filterInArray`</td>
-    </tr>
-    <tr>
-	<td><code>age`</td>
-	<td><code>age`</td>
-	<td><code>filterRange`</td>
     </tr>
     <tr>
 	<td><code>name</code></td>
@@ -56,3 +68,8 @@ This `filterMap` creates a total of 3 dimensions (`colour`, `age`, and `name`):
 	<td><code>filterExact</code></td>
     </tr>
 </table>
+
+
+For the `filterRange` we must specify the array as two entries, we can then update each one independent of the other as we would with other dimension types.
+
+For example, I could set the `minAge` with the following: `addFilter('minAge', 5);` I can also set the maxAge on its own: `addFilter('maxAge', 5);` the only caveat is that the convention is to specify both sides of the `filterRange`, so we'd need to specify: `minNumberOfX`/`maxNumberOfX`, always using the `min`/`max` prefix.

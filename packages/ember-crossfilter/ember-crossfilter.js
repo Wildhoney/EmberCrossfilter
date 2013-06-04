@@ -226,7 +226,6 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
     },
 
-
     /**
      * @method _setFilterRangeMax
      * @param map
