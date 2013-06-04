@@ -26,13 +26,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
     /**
      * Update the content in the controller against the applied filters.
      * @param map
-     * @param method
      * @return {void}
      * @private
      */
-    _updateContent: function(map, method) {
-
-        method = method || map.method;
+    _updateContent: function(map) {
 
         // Find the defined dimension name, and begin the timing.
         var start       = new Date().getTime(),
@@ -45,13 +42,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         } else {
 
-            switch (method) {
+            switch (map.method) {
 
                 // Use the jQuery inArray method if we've defined a filterInArray.
                 case ('filterInArray')  : this._setFilterInArray(map, dimension); break;
 
                 // Otherwise we can use the old-fashioned Crossfilter method.
-                default                 : dimension[method](map.value); break;
+                default                 : dimension[map.method](map.value); break;
 
 
             }
