@@ -22,7 +22,9 @@ When using Crossfilter, a common mistake is to replace the `content` property wi
 How do I use it?
 -------------
 
-EmberCrossfilter can be configuring with one configuration object (`filterMap`). In the bundled example we have the following configuration:
+EmberCrossfilter can be configured with one configuration object (`filterMap`).
+
+In the bundled example we have the following configuration:
 
 	filterMap: {
 		colour:   { property: 'colours', dimension: 'colour',  method: 'filterInArray', value: null },
