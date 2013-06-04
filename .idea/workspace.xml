@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2acd4f79-5b21-4a5f-a002-0981722e0787" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-    </list>
+    <list default="true" id="2acd4f79-5b21-4a5f-a002-0981722e0787" name="Default" comment="" />
     <ignored path="EmberCrossfilter.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="2acd4f79-5b21-4a5f-a002-0981722e0787" time="1370357531446" ignored="false" />
