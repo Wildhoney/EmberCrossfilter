@@ -54,6 +54,9 @@ window.EmberCrossfilter = Ember.Mixin.create({
                 // Use the jQuery inArray method if we've defined a filterInArray.
                 case ('filterInArray')  : this._setFilterInArray(map, dimension); break;
 
+                // We need to apply a special callback if we're dealing with a filterFunction.
+                case ('filterFunction') : this._setFilterFunction(map, dimension); break;
+
                 // Otherwise we can use the old-fashioned Crossfilter method.
                 default                 : dimension[map.method](map.value); break;
 
@@ -167,17 +170,33 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
+     * @method _setFilterInArray
+     * @param map
+     * @param dimension
      * Implement a missing Crossfilter method for checking the inArray, although
      * if you have a small array, then you might be better off using bitwise
      * against the filterFunction method.
-     * @param map
-     * @param dimension
      * @private
      */
     _setFilterInArray: function(map, dimension) {
         dimension.filterFunction(function(d) {
             return $.inArray(map.value, d) !== -1;
         });
+    },
+
+    /**
+     * @method _setFilterFunction
+     * @param map
+     * @param dimension
+     * Although the filterFunction is similar to filterRange, filterExact, etc... we
+     * need to invoke a user callback in order to calculate it. For this we use
+     * convention over configuration.
+     * @private
+     */
+    _setFilterFunction: function(map, dimension) {
+        var methodName = '_apply%@'.fmt(map.dimension.capitalize());
+        Ember.assert('Crossfilter `filterFunction` expects a callback named `%@`.'.fmt(methodName), !!Ember.canInvoke(this, methodName));
+        dimension.filterFunction(this[methodName]);
     }
 
 });

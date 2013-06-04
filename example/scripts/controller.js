@@ -46,9 +46,20 @@ App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, {
      * your dimensions.
      */
     filterMap: {
-        colour:   { property: 'colours', dimension: 'colour',  method: 'filterInArray', value: null },
-        age:      { property: 'age', dimension: 'age', method: 'filterRange', value: [] },
-        name:     { property: 'name', dimension: 'name', method: 'filterExact', value: null  }
+        colour: { property: 'colours', dimension: 'colour',  method: 'filterInArray', value: null },
+        age:    { property: 'age', dimension: 'age', method: 'filterRange', value: [] },
+        name:   { property: 'name', dimension: 'name', method: 'filterExact', value: null  },
+        isCute: { property: 'cuteness', dimension: 'cuteness', method: 'filterFunction', value: null }
+    },
+
+    /**
+     * Callback for the isCute filterFunction.
+     * @param dimension {String|Array|Number}
+     * @return {Boolean}
+     * @private
+     */
+    _applyCuteness: function(dimension) {
+        return dimension > 9;
     },
 
     /**
@@ -59,9 +70,9 @@ App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, {
    _getCats: function() {
 
        return [
-           { id: 1, name: 'Cecil', age: 4, colours: ['black', 'white', 'beige'] },
-           { id: 2, name: 'Boris', age: 9, colours: ['black', 'white'] },
-           { id: 3, name: 'Irina', age: 6, colours: ['ginger'] }
+           { id: 1, name: 'Cecil', age: 4, colours: ['black', 'white', 'beige'], cuteness: 11 },
+           { id: 2, name: 'Boris', age: 9, colours: ['black', 'white'], cuteness: 5 },
+           { id: 3, name: 'Irina', age: 6, colours: ['ginger'], cuteness: 6 }
        ];
 
    }
