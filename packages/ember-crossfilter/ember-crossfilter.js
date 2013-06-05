@@ -29,6 +29,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         this._super();
 
+        this.set('activeFilters', Ember.A([]));
+
         // Assert that we have the `filterMap` property for configuring EmberCrossfilter.
         Ember.assert('Controller implements EmberCrossfilter but `filterMap` has not been specified.', !!this.filterMap);
 
@@ -164,7 +166,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         var start       = new Date().getTime(),
             dimension   = this['_dimension%@'.fmt(map.dimension.capitalize())];
 
-        if (Ember.isNone(map.value)) {
+        if (Ember.isNone(map.value) && map.method !== 'filterFunction') {
 
             // Remove the filter from the list of active filters.
             Ember.get(this, 'activeFilters').removeObject(map.name);
@@ -191,7 +193,6 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
                 // Otherwise we can use the old-fashioned Crossfilter method.
                 default                 : dimension[map.method](map.value); break;
-
 
             }
 
@@ -360,8 +361,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
         Ember.assert('You must specify define the `max` dimension for %@'.fmt(map.name), !!this.filterMap[minName]);
 
         // Apply the filter using the existing maximum value, if it exists.
-        var minValue = this.filterMap[minName].value;
-        dimension.filterRange([minValue || -Infinity, map.value]);
+        var maxValue = this.filterMap[minName].value;
+        dimension.filterRange([map.value, maxValue || Infinity]);
 
     },
 
@@ -382,7 +383,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Apply the filter using the existing minimum value, if it exists.
         var minValue = this.filterMap[maxName].value;
-        dimension.filterRange([map.value, minValue || Infinity]);
+        dimension.filterRange([minValue || -Infinity, map.value]);
 
     }
 
