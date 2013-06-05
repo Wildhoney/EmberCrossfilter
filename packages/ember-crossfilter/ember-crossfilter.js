@@ -37,13 +37,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
         this._crossfilter = crossfilter(content);
         this._createDimensions();
 
-        if (Ember.get(this, 'sortProperty')) {
+        if (Ember.get(this, 'sort.property')) {
 
             // Gather the details for the sorting.
-            var sortProperty    = Ember.get(this, 'sortProperty'),
-                sortAscending   = Ember.get(this, 'sortAscending');
+            var sortProperty    = Ember.get(this, 'sort.property'),
+                sortAscending   = Ember.get(this, 'sort.isAscending');
 
-            // If we have a sortProperty then we can sort the content straight away.
+            // If we have a sort.property then we can sort the content straight away.
             Ember.set(this, 'content', this._sortedContent(content, sortProperty, sortAscending));
 
         }
@@ -128,11 +128,12 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Sort the content and then place it into the content array.
         var content = this._sortedContent(Ember.get(this, 'content'), property, isAscending);
+
         Ember.set(this, 'content', content);
 
         // Change the controller's variables so that you can see what's active.
-        Ember.set(this, 'sortProperty', property);
-        Ember.set(this, 'sortAscending', isAscending);
+        Ember.set(this, 'sort.property', property);
+        Ember.set(this, 'sort.isAscending', isAscending);
 
         // Notify that we've rearranged the content, otherwise there will be no update.
         this.notifyPropertyChange('content');
@@ -213,8 +214,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
         var defaultDimension    = Ember.get(this, '_dimensionId'),
             content             = defaultDimension.filterAll().top(Infinity);
 
-        if (Ember.get(this, 'sortProperty')) {
-            content = this._sortedContent(content);
+        if (Ember.get(this, 'sort.property')) {
+            content = this._sortedContent(content, Ember.get(this, 'sort.property'), Ember.get(this, 'sort.isAscending'));
         }
 
         // Finally we can update the content of the controller.
