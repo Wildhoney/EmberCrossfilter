@@ -60,6 +60,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         if (Ember.isNone(map.value)) {
 
+            // Remove the filter from the list of active filters.
             Ember.get(this, 'activeFilters').removeObject(map.name);
 
             // Clear the dimension of any applied filter.
@@ -67,6 +68,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         } else {
 
+            // Add the filter to the list of active filters.
             Ember.get(this, 'activeFilters').pushObject(map.name);
 
             switch (map.method) {
