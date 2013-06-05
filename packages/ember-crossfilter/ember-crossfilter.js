@@ -25,7 +25,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         Ember.assert('Controller implements EmberCrossfilter but `filterMap` has not been specified.', !!this.filterMap);
 
         // Create the Crossfilter, and finally create the dimensions.
-        this._crossfilter = crossfilter(this.get('content'));
+        this._crossfilter = crossfilter(Ember.get(this, 'content'));
         this._createDimensions();
 
     },
@@ -40,7 +40,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Find the defined dimension name, and begin the timing.
         var start       = new Date().getTime(),
-            dimension   = this.get('_dimension%@'.fmt(map.dimension.capitalize()));
+            dimension   = this['_dimension%@'.fmt(map.dimension.capitalize())];
 
         if (Ember.isNone(map.value)) {
 
@@ -69,14 +69,14 @@ window.EmberCrossfilter = Ember.Mixin.create({
         }
 
         // Gather the default dimension, and apply the default dimension on the primary key.
-        var defaultDimension    = this.get('_dimensionId'),
+        var defaultDimension    = Ember.get(this, '_dimensionId'),
             content             = defaultDimension.filterAll().top(Infinity);
 
         // Used for debugging purposes.
         Ember.debug('Crossfilter Time: %@ millisecond(s)'.fmt(new Date().getTime() - start));
 
         // Finally we can update the content of the controller.
-        this.set('content', content);
+        Ember.set(this, 'content', content);
 
     },
 
