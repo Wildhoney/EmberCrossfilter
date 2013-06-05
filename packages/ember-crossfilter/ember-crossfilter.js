@@ -185,11 +185,32 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
     /**
      * @method removeFilter
-     * Clear the any applied filters to the dimension.
      * @param key
+     * Clear the any applied filters to the dimension.
+     * @return {void}
      */
     removeFilter: function(key) {
         this.addFilter(key, null);
+    },
+
+    /**
+     * @method clearAllFilters
+     * Clears all of the filters that are currently active.
+     * @return {void}
+     */
+    clearAllFilters: function() {
+
+        // Loop through all of the configured dimensions.
+        for (var key in this.filterMap) {
+
+            if (!this.filterMap.hasOwnProperty(key)) {
+                continue;
+            }
+
+            // Remove the filter by its key.
+            this.removeFilter(key);
+        }
+
     },
 
     /**

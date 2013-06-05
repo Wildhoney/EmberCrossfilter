@@ -34,7 +34,7 @@
 
     <script type="text/x-handlebars" data-template-name="cats">
 
-        <h1>Apply Filters</h1>
+        <h1>Apply Filters &ndash; <a {{action "clearAllFilters"}}>Clear All</a></h1>
 
         <ul>
             <li>{{#view view.Filter key="colour" value="black"}}Cats who are coloured black{{/view}}</li>
