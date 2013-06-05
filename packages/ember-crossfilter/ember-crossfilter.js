@@ -91,6 +91,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
      */
     clearAllFilters: function() {
 
+        var start = new Date().getTime();
+
         // Loop through all of the configured dimensions.
         for (var key in this.filterMap) {
 
@@ -98,9 +100,20 @@ window.EmberCrossfilter = Ember.Mixin.create({
                 continue;
             }
 
-            // Remove the filter by its key.
-            this.removeFilter(key);
+            // Find the map and the dimension by the current key.
+            var map         = this.filterMap[key],
+                dimension   = this['_dimension%@'.fmt(map.dimension.capitalize())];
+
+            // Clear the applied Crossfilter.
+            dimension.filterAll();
+
         }
+
+        // Update the changes with all of the filters removed.
+        this._applyContentChanges();
+
+        // Used for debugging purposes.
+        Ember.debug('Crossfilter Time: %@ millisecond(s)'.fmt(new Date().getTime() - start));
 
     },
 
@@ -180,6 +193,22 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         }
 
+        // Update the "content" array to reflect the new changes.
+        this._applyContentChanges();
+
+        // Used for debugging purposes.
+        Ember.debug('Crossfilter Time: %@ millisecond(s)'.fmt(new Date().getTime() - start));
+
+    },
+
+    /**
+     * @method _applyContentChanges
+     * Updates the content array based on the applied filters.
+     * @return {void}
+     * @private
+     */
+    _applyContentChanges: function() {
+
         // Gather the default dimension, and apply the default dimension on the primary key.
         var defaultDimension    = Ember.get(this, '_dimensionId'),
             content             = defaultDimension.filterAll().top(Infinity);
@@ -187,9 +216,6 @@ window.EmberCrossfilter = Ember.Mixin.create({
         if (Ember.get(this, 'sortProperty')) {
             content = this._sortedContent(content);
         }
-
-        // Used for debugging purposes.
-        Ember.debug('Crossfilter Time: %@ millisecond(s)'.fmt(new Date().getTime() - start));
 
         // Finally we can update the content of the controller.
         Ember.set(this, 'content', content);
