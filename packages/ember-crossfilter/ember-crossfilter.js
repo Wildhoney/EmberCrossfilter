@@ -13,6 +13,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
     _crossfilter: null,
 
     /**
+     * @property activeFilters
+     * @type {Array}
+     * @default Ember.A
+     */
+    activeFilters: Ember.A([]),
+
+    /**
      * @method init
      * Invoked when the controller is instantiated.
      * @constructor
@@ -31,6 +38,15 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
+     * Determines whether the current filter is active by its key.
+     * @param key {String} name of the defined Crossfilter from `filterMap`.
+     * @return {Boolean}
+     */
+    isActiveFilter: function(key) {
+        return $.inArray(key, Ember.get(this, 'activeFilters')) !== -1;
+    },
+
+    /**
      * Update the content in the controller against the applied filters.
      * @param map
      * @return {void}
@@ -44,10 +60,14 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         if (Ember.isNone(map.value)) {
 
+            Ember.get(this, 'activeFilters').removeObject(map.name);
+
             // Clear the dimension of any applied filter.
             dimension.filterAll();
 
         } else {
+
+            Ember.get(this, 'activeFilters').pushObject(map.name);
 
             switch (map.method) {
 
@@ -66,6 +86,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
 
             }
+
         }
 
         // Gather the default dimension, and apply the default dimension on the primary key.
@@ -163,11 +184,11 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * @method clearFilter
+     * @method removeFilter
      * Clear the any applied filters to the dimension.
      * @param key
      */
-    clearFilter: function(key) {
+    removeFilter: function(key) {
         this.addFilter(key, null);
     },
 
