@@ -109,6 +109,9 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         }
 
+        // Clear all of the active filters.
+        Ember.get(this, 'activeFilters').clear();
+
         // Update the changes with all of the filters removed.
         this._applyContentChanges();
 
