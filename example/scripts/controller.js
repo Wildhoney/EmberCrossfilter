@@ -53,11 +53,11 @@ App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, {
      * your dimensions.
      */
     filterMap: {
-        colour: { property: 'colours', dimension: 'colour', method: 'filterInArray', value: null },
-        minAge: { property: 'age', dimension: 'age', method: 'filterRangeMin', value: null },
-        maxAge: { property: 'age', dimension: 'age', method: 'filterRangeMax', value: null },
-        name:   { property: 'name', dimension: 'name', method: 'filterExact', value: null  },
-        isCute: { property: 'cuteness', dimension: 'cuteness', method: 'filterFunction', value: null }
+        colour: { property: 'colours', dimension: 'colour', method: 'filterInArray' },
+        minAge: { property: 'age', dimension: 'age', method: 'filterRangeMin' },
+        maxAge: { property: 'age', dimension: 'age', method: 'filterRangeMax' },
+        name:   { property: 'name', dimension: 'name', method: 'filterExact' },
+        isCute: { property: 'cuteness', dimension: 'cuteness', method: 'filterFunction' }
     },
 
     /**

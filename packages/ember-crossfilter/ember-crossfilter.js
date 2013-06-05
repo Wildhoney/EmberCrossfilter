@@ -242,6 +242,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
             // Add the name property to the filterMap method for using in setFilterRangeMin/setFilterRangeMax.
             this.filterMap[filter].name = filter;
+            this.filterMap[filter].value = null;
 
             // Reduce this iteration to a simpler variable.
             filter = this.filterMap[filter];
