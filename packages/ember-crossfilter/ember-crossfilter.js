@@ -9,6 +9,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
     /**
      * @property _crossfilter
      * @type {Object}
+    * @private
      */
     _crossfilter: null,
 
@@ -31,9 +32,97 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Assert that we have the `filterMap` property for configuring EmberCrossfilter.
         Ember.assert('Controller implements EmberCrossfilter but `filterMap` has not been specified.', !!this.filterMap);
 
-        // Create the Crossfilter, and finally create the dimensions.
-        this._crossfilter = crossfilter(Ember.get(this, 'content'));
+        // Create the Crossfilter, and then create the dimensions.
+        var content = Ember.get(this, 'content');
+        this._crossfilter = crossfilter(content);
         this._createDimensions();
+
+        if (Ember.get(this, 'sortProperty')) {
+
+            // Gather the details for the sorting.
+            var sortProperty    = Ember.get(this, 'sortProperty'),
+                sortAscending   = Ember.get(this, 'sortAscending');
+
+            // If we have a sortProperty then we can sort the content straight away.
+            Ember.set(this, 'content', this._sortedContent(content, sortProperty, sortAscending));
+
+        }
+
+    },
+
+    /**
+     * @method addFilter
+     * @param key
+     * @param value
+     * Applies a filter to one of our pre-defined dimensions.
+     * @return {void}
+     */
+    addFilter: function(key, value) {
+
+        // Find the map we're referencing by its name, and extract its method.
+        var map     = this.filterMap[key];
+        map.value   = value;
+
+        if (Ember.isArray(value)) {
+            // If we're actually dealing with an array then
+            // we want to upgrade the value to an array.
+            map.value = [value[0], value[1]];
+        }
+
+        // Finally we can begin to update the content in the controller.
+        this._updateContent(map);
+
+    },
+
+    /**
+     * @method removeFilter
+     * @param key
+     * Clear the any applied filters to the dimension.
+     * @return {void}
+     */
+    removeFilter: function(key) {
+        this.addFilter(key, null);
+    },
+
+    /**
+     * @method clearAllFilters
+     * Clears all of the filters that are currently active.
+     * @return {void}
+     */
+    clearAllFilters: function() {
+
+        // Loop through all of the configured dimensions.
+        for (var key in this.filterMap) {
+
+            if (!this.filterMap.hasOwnProperty(key)) {
+                continue;
+            }
+
+            // Remove the filter by its key.
+            this.removeFilter(key);
+        }
+
+    },
+
+    /**
+     * @method sortContent
+     * Sorts the content based on the property, and whether it should be ascending/descending.
+     * @param property {String}
+     * @param isAscending {Boolean}
+     * @return {void}
+     */
+    sortContent: function(property, isAscending) {
+
+        // Sort the content and then place it into the content array.
+        var content = this._sortedContent(Ember.get(this, 'content'), property, isAscending);
+        Ember.set(this, 'content', content);
+
+        // Change the controller's variables so that you can see what's active.
+        Ember.set(this, 'sortProperty', property);
+        Ember.set(this, 'sortAscending', isAscending);
+
+        // Notify that we've rearranged the content, otherwise there will be no update.
+        this.notifyPropertyChange('content');
 
     },
 
@@ -94,6 +183,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Gather the default dimension, and apply the default dimension on the primary key.
         var defaultDimension    = Ember.get(this, '_dimensionId'),
             content             = defaultDimension.filterAll().top(Infinity);
+
+        if (Ember.get(this, 'sortProperty')) {
+            content = this._sortedContent(content);
+        }
 
         // Used for debugging purposes.
         Ember.debug('Crossfilter Time: %@ millisecond(s)'.fmt(new Date().getTime() - start));
@@ -162,56 +255,27 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * @method addFilter
-     * @param key
-     * @param value
-     * Applies a filter to one of our pre-defined dimensions.
-     * @return {void}
+     * @method _sortedContent
+     * @param content {Array}
+     * @param property {String}
+     * @param isAscending {Boolean}
+     * @return {String}
+     * @private
      */
-    addFilter: function(key, value) {
+    _sortedContent: function(content, property, isAscending) {
 
-        // Find the map we're referencing by its name, and extract its method.
-        var map     = this.filterMap[key];
-        map.value   = value;
+        // Initialise the sorting using Crossfilter's `quicksort`.
+        var sortAlgorithm   = crossfilter.quicksort.by(function(d) { return d[property]; });
 
-        if (Ember.isArray(value)) {
-            // If we're actually dealing with an array then
-            // we want to upgrade the value to an array.
-            map.value = [value[0], value[1]];
+        // Sort the content using Crossfilter.
+        var sorted = sortAlgorithm(content, 0, content.length);
+
+        if (!isAscending) {
+            // If we want it in ascending order, then we need to reverse the array.
+            sorted = sorted.reverse();
         }
 
-        // Finally we can begin to update the content in the controller.
-        this._updateContent(map);
-
-    },
-
-    /**
-     * @method removeFilter
-     * @param key
-     * Clear the any applied filters to the dimension.
-     * @return {void}
-     */
-    removeFilter: function(key) {
-        this.addFilter(key, null);
-    },
-
-    /**
-     * @method clearAllFilters
-     * Clears all of the filters that are currently active.
-     * @return {void}
-     */
-    clearAllFilters: function() {
-
-        // Loop through all of the configured dimensions.
-        for (var key in this.filterMap) {
-
-            if (!this.filterMap.hasOwnProperty(key)) {
-                continue;
-            }
-
-            // Remove the filter by its key.
-            this.removeFilter(key);
-        }
+        return sorted
 
     },
 

@@ -33,11 +33,18 @@ App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, {
     },
 
     /**
-     * @property sortBy
+     * @property sortProperty
      * @type {String}
      * @default "name"
      */
     sortProperty: 'name',
+
+    /**
+     * @property sortAscending
+     * @type {Boolean}
+     * @default true
+     */
+    sortAscending: true,
 
     /**
      * @property filterMap

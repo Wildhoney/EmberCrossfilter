@@ -37,6 +37,19 @@
         <h1>Apply Filters &ndash; <a {{action "clearAllFilters"}}>Clear All</a></h1>
 
         <ul>
+            <li>Sort by Name: &ndash;
+                <a {{action "sortContent" "name" true}}>Sort by Name (Ascending)</a>
+                &ndash;
+                <a {{action "sortContent" "name" false}}>Sort by Name (Descending)</a>
+            </li>
+            <li>Sort by Cuteness: &ndash;
+                <a {{action "sortContent" "cuteness" true}}>Sort by Cuteness (Ascending)</a>
+                &ndash;
+                <a {{action "sortContent" "cuteness" false}}>Sort by Cuteness (Descending)</a>
+            </li>
+        </ul>
+
+        <ul>
             <li>{{#view view.Filter key="colour" value="black"}}Cats who are coloured black{{/view}}</li>
             <li>{{#view view.Filter key="minAge" value=8}}Cats who are younger than 8{{/view}}</li>
             <li>{{#view view.Filter key="maxAge" value=5}}Cats who are older than 5{{/view}}</li>
