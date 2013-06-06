@@ -64,6 +64,11 @@ describe('Ember Crossfilter', function() {
             expect(Ember.get(controller, 'content.firstObject.name')).toEqual('Boris');
         });
 
+        it('Can sort content descending by name.', function() {
+            controller._sortedContent(Ember.get(controller, 'content'), 'name', false);
+            expect(Ember.get(controller, 'content.firstObject.name')).toEqual('Jimmy');
+        });
+
     });
 
     describe('Crossfilter', function() {
