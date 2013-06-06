@@ -87,9 +87,24 @@ describe('Ember Crossfilter', function() {
 
     describe('Active Filters', function() {
 
-        it('Can determine that the name filter is active.', function() {
-            controller.addFilter('name', 'Cecil');
-            expect(controller.get('activeFilters')).toEqual(['name']);
+        it('Can determine that the minAge filter is active.', function() {
+            controller.addFilter('minAge', 4);
+            expect(controller.get('activeFilters')).toEqual(['minAge']);
+        });
+
+        it('Can determine that the name filter is not active.', function() {
+            controller.addFilter('colour', 'black');
+            expect(controller.get('activeFilters')).toEqual(['colour']);
+        });
+
+        it('Can determine that the name filter is active via helper method.', function() {
+            controller.addFilter('name', 'Boris');
+            expect(controller.isActiveFilter('name')).toBeTruthy();
+        });
+
+        it('Can determine that the minAge filter is not active via helper method.', function() {
+            controller.addFilter('name', 'Boris');
+            expect(controller.isActiveFilter('minAge')).toBeFalsy();
         });
 
         it('Can determine that the many filters are active.', function() {
