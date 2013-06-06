@@ -26,12 +26,18 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @constructor
      */
     init: function() {
+
         this._super();
 
         // Define an empty activeFilters.
         Ember.set(this, 'activeFilters', Ember.A([]));
 
+        // Add the observer to create the Crossfilter when we have some content.
+        Ember.addObserver(this, 'content.length', this, '_createCrossfilter');
+
+        // Create the Crossfilter.
         this._createCrossfilter();
+
     },
 
     /**
@@ -40,7 +46,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {Boolean}
      * @private
      */
-    _createCrossfilter: Ember.observer(function() {
+    _createCrossfilter: function() {
 
         // Assert that we have the `filterMap` property for configuring EmberCrossfilter.
         Ember.assert('Controller implements EmberCrossfilter but `filterMap` has not been specified.', !!this.filterMap);
@@ -57,6 +63,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
         if (hasNoContent || hasDefinedCrossfilter) {
             return false;
         }
+
+        // Remove the observer because we don't want to keep triggering this method when
+        // the content updates.
+        Ember.removeObserver(this, 'content.length', this, '_createCrossfilter');
 
         // Create the Crossfilter and its related dimensions.
         this._crossfilter = crossfilter(content);
@@ -75,7 +85,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         return true;
 
-    }, 'content.length'),
+    },
 
     /**
      * @method addFilter
