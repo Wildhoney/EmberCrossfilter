@@ -218,7 +218,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         var start       = new Date().getTime(),
             dimension   = this['_dimension%@'.fmt(map.dimension.capitalize())];
 
-        if (Ember.isNone(map.value) && map.method !== 'filterFunction') {
+        if (Ember.isNone(map.value)) {
 
             // Remove the filter from the list of active filters.
             Ember.get(this, 'activeFilters').removeObject(map.name);
