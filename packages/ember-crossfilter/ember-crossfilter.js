@@ -334,7 +334,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
             sorted = sorted.reverse();
         }
 
-        return sorted
+        return sorted;
 
     },
 
