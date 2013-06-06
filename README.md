@@ -27,11 +27,11 @@ EmberCrossfilter can be configured with one configuration object (`filterMap`).
 In the bundled example we have the following configuration:
 
 	filterMap: {
-		colour: { property: 'colours', dimension: 'colour',  method: 'filterInArray', value: null },
-		minAge: { property: 'age', dimension: 'age', method: 'filterRangeMin', value: null },
-		maxAge: { property: 'age', dimension: 'age', method: 'filterRangeMax', value: null },
-		name:   { property: 'name', dimension: 'name', method: 'filterExact', value: null  },
-		isCute: { property: 'cuteness', dimension: 'cuteness', method: 'filterFunction', value: null }
+		colour: { property: 'colours', dimension: 'colour',  method: 'filterInArray' },
+		minAge: { property: 'age', dimension: 'age', method: 'filterRangeMin' },
+		maxAge: { property: 'age', dimension: 'age', method: 'filterRangeMax' },
+		name:   { property: 'name', dimension: 'name', method: 'filterExact' },
+		isCute: { property: 'cuteness', dimension: 'cuteness', method: 'filterFunction' }
 	}
 	
 This `filterMap` creates a total of 4 dimensions (`colour`, `age`, and `name`):
