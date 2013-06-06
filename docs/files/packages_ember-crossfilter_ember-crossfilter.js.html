@@ -104,6 +104,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
     _crossfilter: null,
 
     /**
+     * @property allowTiming
+     * @type {Boolean}
+     * Can be overridden by the class to allow for timing details to be output.
+     */
+    allowDebugging: false,
+
+    /**
      * @property activeFilters
      * @type {Array}
      * @default Ember.A
@@ -116,12 +123,18 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @constructor
      */
     init: function() {
+
         this._super();
 
         // Define an empty activeFilters.
         Ember.set(this, &#x27;activeFilters&#x27;, Ember.A([]));
 
+        // Add the observer to create the Crossfilter when we have some content.
+        Ember.addObserver(this, &#x27;content.length&#x27;, this, &#x27;_createCrossfilter&#x27;);
+
+        // Create the Crossfilter.
         this._createCrossfilter();
+
     },
 
     /**
@@ -130,7 +143,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {Boolean}
      * @private
      */
-    _createCrossfilter: Ember.observer(function() {
+    _createCrossfilter: function() {
 
         // Assert that we have the &#x60;filterMap&#x60; property for configuring EmberCrossfilter.
         Ember.assert(&#x27;Controller implements EmberCrossfilter but &#x60;filterMap&#x60; has not been specified.&#x27;, !!this.filterMap);
@@ -147,6 +160,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
         if (hasNoContent || hasDefinedCrossfilter) {
             return false;
         }
+
+        // Remove the observer because we don&#x27;t want to keep triggering this method when
+        // the content updates.
+        Ember.removeObserver(this, &#x27;content.length&#x27;, this, &#x27;_createCrossfilter&#x27;);
 
         // Create the Crossfilter and its related dimensions.
         this._crossfilter = crossfilter(content);
@@ -165,7 +182,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         return true;
 
-    }, &#x27;content.length&#x27;),
+    },
 
     /**
      * @method addFilter
@@ -232,8 +249,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Update the changes with all of the filters removed.
         this._applyContentChanges();
 
-        // Used for debugging purposes.
-        Ember.debug(&#x27;Crossfilter Time: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+        if (this.allowDebugging) {
+            // Used for debugging purposes.
+            Ember.debug(&#x27;Clearing All: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+        }
 
     },
 
@@ -247,7 +266,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
     sortContent: function(property, isAscending) {
 
         // Sort the content and then place it into the content array.
-        var content = this._sortedContent(Ember.get(this, &#x27;content&#x27;), property, isAscending);
+        var content = this._sortedContent(Ember.get(this, &#x27;content&#x27;), property, isAscending),
+            start   = new Date().getTime();
 
         Ember.set(this, &#x27;content&#x27;, content);
 
@@ -259,6 +279,11 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Notify that we&#x27;ve rearranged the content, otherwise there will be no update.
         this.notifyPropertyChange(&#x27;content&#x27;);
+
+        if (this.allowDebugging) {
+            // Debugging information.
+            Ember.debug(&#x27;Sorting: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+        }
 
     },
 
@@ -318,8 +343,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Update the &quot;content&quot; array to reflect the new changes.
         this._applyContentChanges();
 
-        // Used for debugging purposes.
-        Ember.debug(&#x27;Crossfilter Time: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+        if (this.allowDebugging) {
+            // Used for debugging purposes.
+            Ember.debug(&#x27;Filtering: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+        }
 
     },
 
