@@ -5,7 +5,10 @@ module.exports = function(grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
         jshint: {
-            all: ['packages/ember-crossfilter/ember-crossfilter.js']
+            all: ['packages/ember-crossfilter/ember-crossfilter.js'],
+            options: {
+                jshintrc: '.jshintrc',
+            }
         },
         uglify: {
             options: {
@@ -19,9 +22,6 @@ module.exports = function(grunt) {
         yuidoc: {
             compile: {
                 name: '<%= pkg.name %>',
-//                description: '<%= pkg.description %>',
-//                version: '<%= pkg.version %>',
-//                url: '<%= pkg.homepage %>',
                 options: {
                     paths: 'packages/ember-crossfilter/',
                     outdir: 'docs/'
