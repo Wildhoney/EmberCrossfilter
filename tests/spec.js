@@ -3,16 +3,16 @@ describe('Ember Crossfilter', function() {
 
     beforeEach(function() {
 
-        var ArrayController = Ember.ArrayController.extend(EmberCrossfilter, {
+        controller = Ember.ArrayController.extend(EmberCrossfilter, {
 
             init: function() {
+                this._super();
                 Ember.set(this, 'content', [
                     { id: 1, name: 'Cecil', age: 4, colours: ['black', 'white', 'beige'], cuteness: 11 },
                     { id: 2, name: 'Boris', age: 9, colours: ['black', 'white'], cuteness: 5 },
                     { id: 3, name: 'Irina', age: 6, colours: ['ginger'], cuteness: 6 },
                     { id: 4, name: 'Jimmy', age: 12, colours: ['black'], cuteness: 3 }
                 ]);
-                this._super();
             },
 
             filterMap: {
@@ -29,9 +29,7 @@ describe('Ember Crossfilter', function() {
                 return dimension > 9;
             }
 
-        });
-
-        controller = ArrayController.create();
+        }).create();
 
     });
 
