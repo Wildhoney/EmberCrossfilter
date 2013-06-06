@@ -14,6 +14,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
     _crossfilter: null,
 
     /**
+     * @property allowTiming
+     * @type {Boolean}
+     * Can be overridden by the class to allow for timing details to be output.
+     */
+    allowDebugging: false,
+
+    /**
      * @property activeFilters
      * @type {Array}
      * @default Ember.A
@@ -152,8 +159,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Update the changes with all of the filters removed.
         this._applyContentChanges();
 
-        // Used for debugging purposes.
-        Ember.debug('Crossfilter Time: %@ millisecond(s)'.fmt(new Date().getTime() - start));
+        if (this.allowDebugging) {
+            // Used for debugging purposes.
+            Ember.debug('Clearing All: %@ millisecond(s)'.fmt(new Date().getTime() - start));
+        }
 
     },
 
@@ -167,7 +176,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
     sortContent: function(property, isAscending) {
 
         // Sort the content and then place it into the content array.
-        var content = this._sortedContent(Ember.get(this, 'content'), property, isAscending);
+        var content = this._sortedContent(Ember.get(this, 'content'), property, isAscending),
+            start   = new Date().getTime();
 
         Ember.set(this, 'content', content);
 
@@ -179,6 +189,11 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Notify that we've rearranged the content, otherwise there will be no update.
         this.notifyPropertyChange('content');
+
+        if (this.allowDebugging) {
+            // Debugging information.
+            Ember.debug('Sorting: %@ millisecond(s)'.fmt(new Date().getTime() - start));
+        }
 
     },
 
@@ -238,8 +253,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Update the "content" array to reflect the new changes.
         this._applyContentChanges();
 
-        // Used for debugging purposes.
-        Ember.debug('Crossfilter Time: %@ millisecond(s)'.fmt(new Date().getTime() - start));
+        if (this.allowDebugging) {
+            // Used for debugging purposes.
+            Ember.debug('Filtering: %@ millisecond(s)'.fmt(new Date().getTime() - start));
+        }
 
     },
 

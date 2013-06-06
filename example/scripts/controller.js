@@ -53,6 +53,13 @@ App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, {
     },
 
     /**
+     * @property allowDebugging
+     * @type {Boolean}
+     * Enables timing information to be output.
+     */
+    allowDebugging: true,
+
+    /**
      * Callback for the isCute filterFunction.
      * @param dimension {String|Array|Number}
      * @return {Boolean}
