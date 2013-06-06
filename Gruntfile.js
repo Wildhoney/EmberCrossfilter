@@ -27,16 +27,25 @@ module.exports = function(grunt) {
                     outdir: 'docs/'
                 }
             }
+        },
+        jasmine: {
+            pivotal: {
+                src: 'packages/ember-crossfilter/ember-crossfilter.js',
+                options: {
+                    specs: 'tests/spec.js',
+                    helpers: ['lib/jquery-1.10.1.js', 'lib/handlebars-1.0.rc.4.js', 'lib/ember-1.0.0-rc.5.js', 'lib/crossfilter-1.2.0.js']
+                }
+            }
         }
-
     });
 
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-yuidoc');
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
 
     // Default task(s).
-    grunt.registerTask('default', ['uglify']);
+    grunt.registerTask('default', ['jshint', 'jasmine', 'yuidoc', 'uglify']);
 
 };
