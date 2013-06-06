@@ -1,5 +1,33 @@
+/**
+ * @module App
+ * @class CatModel
+ * @type Ember.Object
+ * @extends Ember.Object
+ */
 App.CatModel = Ember.Object.extend({
+
+    /**
+     * @property name
+     * @type {String}
+     */
     name: null,
+
+    /**
+     * @property age
+     * @type {Number}
+     */
     age: null,
-    colours: []
+
+    /**
+     * @property colours
+     * @type []
+     */
+    colours: [],
+
+    /**
+     * @property cuteness
+     * @type {Number}
+     */
+    cuteness: null
+
 });
