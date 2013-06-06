@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>packages\ember-crossfilter\ember-crossfilter.js - EmberCrossfilter</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="EmberCrossfilter"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/EmberCrossfilter.html">EmberCrossfilter</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/EmberCrossfilter.html">EmberCrossfilter</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: packages\ember-crossfilter\ember-crossfilter.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * @module EmberCrossfilter
+ * @class EmberCrossfilter
+ * @type Ember.Mixin
+ * Responsible for converting the loaded content into a Crossfilter object.
+ */
+window.EmberCrossfilter = Ember.Mixin.create({
+
+    /**
+     * @property _crossfilter
+     * @type {Object}
+    * @private
+     */
+    _crossfilter: null,
+
+    /**
+     * @property activeFilters
+     * @type {Array}
+     * @default Ember.A
+     */
+    activeFilters: Ember.A([]),
+
+    /**
+     * @method init
+     * Invoked when the controller is instantiated.
+     * @constructor
+     */
+    init: function() {
+        this._super();
+
+        // Define an empty activeFilters.
+        Ember.set(this, &#x27;activeFilters&#x27;, Ember.A([]));
+
+        this._createCrossfilter();
+    },
+
+    /**
+     * @method _createCrossfilter
+     * Creates the Crossfilter from the content.
+     * @return {Boolean}
+     * @private
+     */
+    _createCrossfilter: Ember.observer(function() {
+
+        // Assert that we have the &#x60;filterMap&#x60; property for configuring EmberCrossfilter.
+        Ember.assert(&#x27;Controller implements EmberCrossfilter but &#x60;filterMap&#x60; has not been specified.&#x27;, !!this.filterMap);
+
+        // Create the Crossfilter, and then create the dimensions.
+        var content = Ember.get(this, &#x27;content&#x27;);
+
+        // Checks whether we have a defined controller, and/or no content.
+        var hasDefinedCrossfilter   = !!Ember.get(this, &#x27;_crossfilter&#x27;),
+            hasNoContent            = !content.length;
+
+        // If we don&#x27;t want have any content yet, or a defined Crossfilter, then either
+        // the content hasn&#x27;t been loaded yet, or we&#x27;ve already created the Crossfilter.
+        if (hasNoContent || hasDefinedCrossfilter) {
+            return false;
+        }
+
+        // Create the Crossfilter and its related dimensions.
+        this._crossfilter = crossfilter(content);
+        this._createDimensions();
+
+        if (Ember.get(this, &#x27;sort.sortProperty&#x27;)) {
+
+            // Gather the details for the sorting.
+            var sortProperty    = Ember.get(this, &#x27;sort.sortProperty&#x27;),
+                sortAscending   = Ember.get(this, &#x27;sort.isAscending&#x27;);
+
+            // If we have a sort.sortProperty then we can sort the content straight away.
+            Ember.set(this, &#x27;content&#x27;, this._sortedContent(content, sortProperty, sortAscending));
+
+        }
+
+        return true;
+
+    }, &#x27;content.length&#x27;),
+
+    /**
+     * @method addFilter
+     * @param key
+     * @param value
+     * Applies a filter to one of our pre-defined dimensions.
+     * @return {void}
+     */
+    addFilter: function(key, value) {
+
+        // Find the map we&#x27;re referencing by its name, and extract its method.
+        var map     = this.filterMap[key];
+        map.value   = value;
+
+        if (Ember.isArray(value)) {
+            // If we&#x27;re actually dealing with an array then
+            // we want to upgrade the value to an array.
+            map.value = [value[0], value[1]];
+        }
+
+        // Finally we can begin to update the content in the controller.
+        this._updateContent(map);
+
+    },
+
+    /**
+     * @method removeFilter
+     * @param key
+     * Clear the any applied filters to the dimension.
+     * @return {void}
+     */
+    removeFilter: function(key) {
+        this.addFilter(key, null);
+    },
+
+    /**
+     * @method clearAllFilters
+     * Clears all of the filters that are currently active.
+     * @return {void}
+     */
+    clearAllFilters: function() {
+
+        var start = new Date().getTime();
+
+        // Loop through all of the configured dimensions.
+        for (var key in this.filterMap) {
+
+            if (!this.filterMap.hasOwnProperty(key)) {
+                continue;
+            }
+
+            // Find the map and the dimension by the current key.
+            var map         = this.filterMap[key],
+                dimension   = this[&#x27;_dimension%@&#x27;.fmt(map.dimension.capitalize())];
+
+            // Clear the applied Crossfilter.
+            dimension.filterAll();
+
+        }
+
+        // Clear all of the active filters.
+        Ember.get(this, &#x27;activeFilters&#x27;).clear();
+
+        // Update the changes with all of the filters removed.
+        this._applyContentChanges();
+
+        // Used for debugging purposes.
+        Ember.debug(&#x27;Crossfilter Time: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+
+    },
+
+    /**
+     * @method sortContent
+     * Sorts the content based on the property, and whether it should be ascending/descending.
+     * @param property {String}
+     * @param isAscending {Boolean}
+     * @return {void}
+     */
+    sortContent: function(property, isAscending) {
+
+        // Sort the content and then place it into the content array.
+        var content = this._sortedContent(Ember.get(this, &#x27;content&#x27;), property, isAscending);
+
+        Ember.set(this, &#x27;content&#x27;, content);
+
+        // Change the controller&#x27;s variables so that you can see what&#x27;s active.
+        Ember.assert(&#x27;In order to sort you must have a &#x60;sort&#x60; object defined.&#x27;, !!Ember.get(this, &#x27;sort&#x27;));
+        Ember.assert(&#x27;You must define &#x60;sortProperty&#x60; in your &#x60;sort&#x60; object.&#x27;, !!Ember.get(this, &#x27;sort.sortProperty&#x27;));
+        Ember.set(this, &#x27;sort.sortProperty&#x27;, property);
+        Ember.set(this, &#x27;sort.isAscending&#x27;, isAscending);
+
+        // Notify that we&#x27;ve rearranged the content, otherwise there will be no update.
+        this.notifyPropertyChange(&#x27;content&#x27;);
+
+    },
+
+    /**
+     * Determines whether the current filter is active by its key.
+     * @param key {String} name of the defined Crossfilter from &#x60;filterMap&#x60;.
+     * @return {Boolean}
+     */
+    isActiveFilter: function(key) {
+        return $.inArray(key, Ember.get(this, &#x27;activeFilters&#x27;)) !== -1;
+    },
+
+    /**
+     * Update the content in the controller against the applied filters.
+     * @param map
+     * @return {void}
+     * @private
+     */
+    _updateContent: function(map) {
+
+        // Find the defined dimension name, and begin the timing.
+        var start       = new Date().getTime(),
+            dimension   = this[&#x27;_dimension%@&#x27;.fmt(map.dimension.capitalize())];
+
+        if (Ember.isNone(map.value) &amp;&amp; map.method !== &#x27;filterFunction&#x27;) {
+
+            // Remove the filter from the list of active filters.
+            Ember.get(this, &#x27;activeFilters&#x27;).removeObject(map.name);
+
+            // Clear the dimension of any applied filter.
+            dimension.filterAll();
+
+        } else {
+
+            // Add the filter to the list of active filters.
+            Ember.get(this, &#x27;activeFilters&#x27;).pushObject(map.name);
+
+            switch (map.method) {
+
+                // Use the jQuery inArray method if we&#x27;ve defined a filterInArray.
+                case (&#x27;filterInArray&#x27;)  : this._setFilterInArray(map, dimension); break;
+
+                // Invoked when we&#x27;re handling a filterRange dimension.
+                case (&#x27;filterRangeMin&#x27;)  : this._setFilterRangeMin(map, dimension); break;
+                case (&#x27;filterRangeMax&#x27;)  : this._setFilterRangeMax(map, dimension); break;
+
+                // We need to apply a special callback if we&#x27;re dealing with a filterFunction.
+                case (&#x27;filterFunction&#x27;) : this._setFilterFunction(map, dimension); break;
+
+                // Otherwise we can use the old-fashioned Crossfilter method.
+                default                 : dimension[map.method](map.value); break;
+
+            }
+
+        }
+
+        // Update the &quot;content&quot; array to reflect the new changes.
+        this._applyContentChanges();
+
+        // Used for debugging purposes.
+        Ember.debug(&#x27;Crossfilter Time: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+
+    },
+
+    /**
+     * @method _applyContentChanges
+     * Updates the content array based on the applied filters.
+     * @return {void}
+     * @private
+     */
+    _applyContentChanges: function() {
+
+        // Gather the default dimension, and apply the default dimension on the primary key.
+        var defaultDimension    = Ember.get(this, &#x27;_dimensionId&#x27;),
+            content             = defaultDimension.filterAll().top(Infinity);
+
+        if (Ember.get(this, &#x27;sort.sortProperty&#x27;)) {
+            content = this._sortedContent(content, Ember.get(this, &#x27;sort.sortProperty&#x27;), Ember.get(this, &#x27;sort.isAscending&#x27;));
+        }
+
+        // Finally we can update the content of the controller.
+        Ember.set(this, &#x27;content&#x27;, content);
+
+    },
+
+    /**
+     * @method _createDimensions
+     * Create the defined dimensions from the controller.
+     * @return {void}
+     * @private
+     */
+    _createDimensions: function() {
+
+        /**
+         * @method defineProperty
+         * Wrapper for the Object.defineProperty, as all of our defined dimensions will
+         * be similar in their construction.
+         * @param name
+         * @param property
+         * @return {void}
+         */
+        var defineProperty = function defineProperty(name, property) {
+
+            if (this[name]) {
+                // We&#x27;ve already defined this dimension (probably a filterRange).
+                return;
+            }
+
+            // Define the property using the JS 1.8.5 way.
+            Object.defineProperty(this, name, {
+                enumerable: false,
+                configurable: false,
+                writable: false,
+                value: this._crossfilter.dimension(function(d) {
+                    return d[property];
+                })
+            });
+
+        };
+
+        // Define our default dimension, which is the primary key of the collection (id).
+        defineProperty.apply(this, [&#x27;_dimensionId&#x27;, &#x27;id&#x27;]);
+
+        for (var filter in this.filterMap) {
+
+            if (!this.filterMap.hasOwnProperty(filter)) {
+                continue;
+            }
+
+            // Add the name property to the filterMap method for using in setFilterRangeMin/setFilterRangeMax.
+            this.filterMap[filter].name = filter;
+            this.filterMap[filter].value = null;
+
+            // Reduce this iteration to a simpler variable.
+            filter = this.filterMap[filter];
+
+            // Define the defined dimension in the controller.
+            var name = &#x27;_dimension%@&#x27;.fmt(filter.dimension.capitalize());
+            defineProperty.apply(this, [name, filter.property]);
+
+        }
+
+    },
+
+    /**
+     * @method _sortedContent
+     * @param content {Array}
+     * @param property {String}
+     * @param isAscending {Boolean}
+     * @return {String}
+     * @private
+     */
+    _sortedContent: function(content, property, isAscending) {
+
+        // Initialise the sorting using Crossfilter&#x27;s &#x60;quicksort&#x60;.
+        var sortAlgorithm   = crossfilter.quicksort.by(function(d) { return d[property]; });
+
+        // Sort the content using Crossfilter.
+        var sorted = sortAlgorithm(content, 0, content.length);
+
+        if (!isAscending) {
+            // If we want it in ascending order, then we need to reverse the array.
+            sorted = sorted.reverse();
+        }
+
+        return sorted;
+
+    },
+
+    /**
+     * @method _setFilterInArray
+     * @param map
+     * @param dimension
+     * Implement a missing Crossfilter method for checking the inArray, although
+     * if you have a small array, then you might be better off using bitwise
+     * against the filterFunction method.
+     * @private
+     */
+    _setFilterInArray: function(map, dimension) {
+
+        dimension.filterFunction(function(d) {
+            return $.inArray(map.value, d) !== -1;
+        });
+
+    },
+
+    /**
+     * @method _setFilterFunction
+     * @param map
+     * @param dimension
+     * Although the filterFunction is similar to filterRange, filterExact, etc... we
+     * need to invoke a user callback in order to calculate it. For this we use
+     * convention over configuration.
+     * @private
+     */
+    _setFilterFunction: function(map, dimension) {
+
+        var methodName = &#x27;_apply%@&#x27;.fmt(map.dimension.capitalize());
+        Ember.assert(&#x27;Crossfilter &#x60;filterFunction&#x60; expects a callback named &#x60;%@&#x60;.&#x27;.fmt(methodName), !!Ember.canInvoke(this, methodName));
+        dimension.filterFunction(this[methodName]);
+
+    },
+
+    /**
+     * @method _setFilterRangeMin
+     * @param map
+     * @param dimension
+     * Checks the corresponding dimension for the minimum value, and then continues to create
+     * the array for the filterRange.
+     * @private
+     */
+    _setFilterRangeMin: function(map, dimension) {
+
+        var minName = map.name.replace(&#x27;min&#x27;, &#x27;max&#x27;);
+
+        // Assert that we can find the opposite dimension.
+        Ember.assert(&#x27;You must specify define the &#x60;max&#x60; dimension for %@&#x27;.fmt(map.name), !!this.filterMap[minName]);
+
+        // Apply the filter using the existing maximum value, if it exists.
+        var maxValue = this.filterMap[minName].value;
+        dimension.filterRange([map.value, maxValue || Infinity]);
+
+    },
+
+    /**
+     * @method _setFilterRangeMax
+     * @param map
+     * @param dimension
+     * Checks the corresponding dimension for the maximum value, and then continues to create
+     * the array for the filterRange.
+     * @private
+     */
+    _setFilterRangeMax: function(map, dimension) {
+
+        var maxName = map.name.replace(&#x27;max&#x27;, &#x27;min&#x27;);
+
+        // Assert that we can find the opposite dimension.
+        Ember.assert(&#x27;You must specify define the &#x60;min&#x60; dimension for %@&#x27;.fmt(map.name), !!this.filterMap[maxName]);
+
+        // Apply the filter using the existing minimum value, if it exists.
+        var minValue = this.filterMap[maxName].value;
+        dimension.filterRange([minValue || -Infinity, map.value]);
+
+    }
+
+});
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

@@ -15,6 +15,18 @@ module.exports = function(grunt) {
                 src: 'packages/ember-crossfilter/ember-crossfilter.js',
                 dest: 'dist/<%= pkg.name %>.min.js'
             }
+        },
+        yuidoc: {
+            compile: {
+                name: '<%= pkg.name %>',
+//                description: '<%= pkg.description %>',
+//                version: '<%= pkg.version %>',
+//                url: '<%= pkg.homepage %>',
+                options: {
+                    paths: 'packages/ember-crossfilter/',
+                    outdir: 'docs/'
+                }
+            }
         }
 
     });
@@ -22,6 +34,7 @@ module.exports = function(grunt) {
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-yuidoc');
 
     // Default task(s).
     grunt.registerTask('default', ['uglify']);

@@ -1,0 +1,378 @@
+{
+    "project": {
+        "name": "EmberCrossfilter"
+    },
+    "files": {
+        "packages\\ember-crossfilter\\ember-crossfilter.js": {
+            "name": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "modules": {
+                "EmberCrossfilter": 1
+            },
+            "classes": {
+                "EmberCrossfilter": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "EmberCrossfilter": {
+            "name": "EmberCrossfilter",
+            "submodules": {},
+            "classes": {
+                "EmberCrossfilter": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 1,
+            "type": "Ember.Mixin\nResponsible for converting the loaded content into a Crossfilter object."
+        }
+    },
+    "classes": {
+        "EmberCrossfilter": {
+            "name": "EmberCrossfilter",
+            "shortname": "EmberCrossfilter",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "EmberCrossfilter",
+            "namespace": "",
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 1
+        }
+    },
+    "classitems": [
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 9,
+            "itemtype": "property",
+            "name": "_crossfilter",
+            "type": "{Object}",
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 16,
+            "itemtype": "property",
+            "name": "activeFilters",
+            "type": "{Array}",
+            "default": "Ember.A",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 23,
+            "itemtype": "method",
+            "name": "init\nInvoked when the controller is instantiated.",
+            "is_constructor": 1,
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 37,
+            "itemtype": "method",
+            "name": "_createCrossfilter\nCreates the Crossfilter from the content.",
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 80,
+            "itemtype": "method",
+            "name": "addFilter",
+            "params": [
+                {
+                    "name": "key",
+                    "description": ""
+                },
+                {
+                    "name": "value!~YUIDOC_LINE~!Applies",
+                    "description": "a filter to one of our pre-defined dimensions."
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 104,
+            "itemtype": "method",
+            "name": "removeFilter",
+            "params": [
+                {
+                    "name": "key!~YUIDOC_LINE~!Clear",
+                    "description": "the any applied filters to the dimension."
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 114,
+            "itemtype": "method",
+            "name": "clearAllFilters\nClears all of the filters that are currently active.",
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 150,
+            "itemtype": "method",
+            "name": "sortContent\nSorts the content based on the property, and whether it should be ascending/descending.",
+            "params": [
+                {
+                    "name": "property",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "isAscending",
+                    "description": "",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 175,
+            "description": "Determines whether the current filter is active by its key.",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "name of the defined Crossfilter from `filterMap`.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 184,
+            "description": "Update the content in the controller against the applied filters.",
+            "params": [
+                {
+                    "name": "map",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 236,
+            "itemtype": "method",
+            "name": "_applyContentChanges\nUpdates the content array based on the applied filters.",
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 257,
+            "itemtype": "method",
+            "name": "_createDimensions\nCreate the defined dimensions from the controller.",
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 265,
+            "itemtype": "method",
+            "name": "defineProperty\nWrapper for the Object.defineProperty, as all of our defined dimensions will\nbe similar in their construction.",
+            "params": [
+                {
+                    "name": "name",
+                    "description": ""
+                },
+                {
+                    "name": "property",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Void"
+            },
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 316,
+            "itemtype": "method",
+            "name": "_sortedContent",
+            "params": [
+                {
+                    "name": "content",
+                    "description": "",
+                    "type": "Array"
+                },
+                {
+                    "name": "property",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "isAscending",
+                    "description": "",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "String"
+            },
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 341,
+            "itemtype": "method",
+            "name": "_setFilterInArray",
+            "params": [
+                {
+                    "name": "map",
+                    "description": ""
+                },
+                {
+                    "name": "dimension!~YUIDOC_LINE~!Implement",
+                    "description": "a missing Crossfilter method for checking the inArray, although\nif you have a small array, then you might be better off using bitwise\nagainst the filterFunction method."
+                }
+            ],
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 358,
+            "itemtype": "method",
+            "name": "_setFilterFunction",
+            "params": [
+                {
+                    "name": "map",
+                    "description": ""
+                },
+                {
+                    "name": "dimension!~YUIDOC_LINE~!Although",
+                    "description": "the filterFunction is similar to filterRange, filterExact, etc... we\nneed to invoke a user callback in order to calculate it. For this we use\nconvention over configuration."
+                }
+            ],
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 375,
+            "itemtype": "method",
+            "name": "_setFilterRangeMin",
+            "params": [
+                {
+                    "name": "map",
+                    "description": ""
+                },
+                {
+                    "name": "dimension!~YUIDOC_LINE~!Checks",
+                    "description": "the corresponding dimension for the minimum value, and then continues to create\nthe array for the filterRange."
+                }
+            ],
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 396,
+            "itemtype": "method",
+            "name": "_setFilterRangeMax",
+            "params": [
+                {
+                    "name": "map",
+                    "description": ""
+                },
+                {
+                    "name": "dimension!~YUIDOC_LINE~!Checks",
+                    "description": "the corresponding dimension for the maximum value, and then continues to create\nthe array for the filterRange."
+                }
+            ],
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "Missing item type\nDetermines whether the current filter is active by its key.",
+            "line": " packages\\ember-crossfilter\\ember-crossfilter.js:175"
+        },
+        {
+            "message": "Missing item type\nUpdate the content in the controller against the applied filters.",
+            "line": " packages\\ember-crossfilter\\ember-crossfilter.js:184"
+        }
+    ]
+}
