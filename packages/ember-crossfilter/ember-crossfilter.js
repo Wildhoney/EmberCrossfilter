@@ -39,13 +39,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
         this._crossfilter = crossfilter(content);
         this._createDimensions();
 
-        if (Ember.get(this, 'sort.property')) {
+        if (Ember.get(this, 'sort.sortProperty')) {
 
             // Gather the details for the sorting.
-            var sortProperty    = Ember.get(this, 'sort.property'),
+            var sortProperty    = Ember.get(this, 'sort.sortProperty'),
                 sortAscending   = Ember.get(this, 'sort.isAscending');
 
-            // If we have a sort.property then we can sort the content straight away.
+            // If we have a sort.sortProperty then we can sort the content straight away.
             Ember.set(this, 'content', this._sortedContent(content, sortProperty, sortAscending));
 
         }
@@ -137,7 +137,9 @@ window.EmberCrossfilter = Ember.Mixin.create({
         Ember.set(this, 'content', content);
 
         // Change the controller's variables so that you can see what's active.
-        Ember.set(this, 'sort.property', property);
+        Ember.assert('In order to sort you must have a `sort` object defined.', !!Ember.get(this, 'sort'));
+        Ember.assert('You must define `sortProperty` in your `sort` object.', !!Ember.get(this, 'sort.sortProperty'));
+        Ember.set(this, 'sort.sortProperty', property);
         Ember.set(this, 'sort.isAscending', isAscending);
 
         // Notify that we've rearranged the content, otherwise there will be no update.
@@ -218,8 +220,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
         var defaultDimension    = Ember.get(this, '_dimensionId'),
             content             = defaultDimension.filterAll().top(Infinity);
 
-        if (Ember.get(this, 'sort.property')) {
-            content = this._sortedContent(content, Ember.get(this, 'sort.property'), Ember.get(this, 'sort.isAscending'));
+        if (Ember.get(this, 'sort.sortProperty')) {
+            content = this._sortedContent(content, Ember.get(this, 'sort.sortProperty'), Ember.get(this, 'sort.isAscending'));
         }
 
         // Finally we can update the content of the controller.

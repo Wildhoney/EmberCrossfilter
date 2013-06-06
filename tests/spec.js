@@ -23,7 +23,7 @@ describe('Ember Crossfilter', function() {
                 isCute: { property: 'cuteness', dimension: 'cuteness', method: 'filterFunction' }
             },
 
-            sort: { property: 'name', isAscending: true },
+            sort: { sortProperty: 'name', isAscending: true },
 
             _applyCuteness: function(dimension) {
                 return dimension > 9;
