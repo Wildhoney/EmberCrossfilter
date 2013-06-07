@@ -58,12 +58,12 @@ When using Crossfilter, it became apparent that comparing two arrays was natural
 
 If you've set `['Italy', 'Russia']` then a model must have BOTH of these values to be considered valid.
 
-* Valid: ['Italy', 'Russia', 'Spain']
-* Invalid: ['Italy', 'Brazil', 'India']
+* Valid: `['Italy', 'Russia', 'Spain']`
+* Invalid: `['Italy', 'Brazil', 'India']`
 
 **OR (`boolean: 'or'`)**
 
 In this case if you've set `['Italy', 'Russia']`, then a model can have either or both of these to be considered valid.
 
-* Valid: ['Italy', 'Haiti']
-* Invalid: ['Portugal', 'Latvia']
+* Valid: `['Italy', 'Haiti']`
+* Invalid: `['Portugal', 'Latvia']`
