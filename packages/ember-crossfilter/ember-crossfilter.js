@@ -672,9 +672,11 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         var methodName = '_apply%@'.fmt(map.name.capitalize());
         Ember.assert('Crossfilter `filterFunction` expects a callback named `%@`.'.fmt(methodName), !!Ember.canInvoke(this, methodName));
+
+        var controller = this;
         dimension.filterFunction(function(d) {
-            return this[methodName].apply(this, [d]);
-        }.bind(this));
+            return controller[methodName].apply(controller, [d]);
+        });
 
     },
 

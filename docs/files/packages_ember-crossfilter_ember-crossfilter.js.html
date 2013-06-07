@@ -111,13 +111,6 @@ window.EmberCrossfilter = Ember.Mixin.create({
     allowDebugging: false,
 
     /**
-     * @property activeFilters
-     * @type {Array}
-     * @default Ember.A
-     */
-    activeFilters: Ember.A([]),
-
-    /**
      * @method init
      * Invoked when the controller is instantiated.
      * @constructor
@@ -126,14 +119,62 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         this._super();
 
-        // Define an empty activeFilters.
-        Ember.set(this, &#x27;activeFilters&#x27;, Ember.A([]));
-
         // Add the observer to create the Crossfilter when we have some content.
         Ember.addObserver(this, &#x27;content.length&#x27;, this, &#x27;_createCrossfilter&#x27;);
 
         // Create the Crossfilter.
         this._createCrossfilter();
+
+    },
+
+    /**
+     * @method reinitialiseCrossfilter
+     * Allows you to reinitialise the Crossfilter creation, such as when new items are
+     * added to the content that you wish to include.
+     * @return {Boolean} whether or not it was successful.
+     */
+//    reinitialiseCrossfilter: function() {
+//        this._crossfilter = null;
+//
+//        for (var key in this) {
+//
+//            if (!key.match(/^_dimension.+/)) {
+//                continue;
+//            }
+//
+//            delete this[key];
+//        }
+//
+//        return this._createCrossfilter();
+//    },
+
+    /**
+     * Determines if a particular filter is active or not.
+     * @param key {String}
+     * @param value {String|Number}
+     * @return {Boolean}
+     */
+    isActiveFilter: function(key, value) {
+
+        // Find the relevant &#x60;filterMap&#x60;.
+        var map = this.filterMap[key];
+
+        // If we&#x27;re dealing with a &#x60;filterInArray&#x60;, then we need to provide a
+        // small calculation on it.
+        if (map.method === &#x27;filterInArray&#x27;) {
+
+            // Gather the bitwise value.
+            var bitwiseValue = map._mapProperties[value];
+
+            if (map.boolean === &#x27;or&#x27;) {
+                return Boolean((map.value &amp; bitwiseValue));
+            } else {
+                return $.inArray(bitwiseValue, map.value) !== -1;
+            }
+        }
+
+        // Otherwise the &#x60;active&#x60; property will tell us.
+        return Ember.get(map, &#x27;active&#x27;) === true;
 
     },
 
@@ -152,7 +193,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         var content = Ember.get(this, &#x27;content&#x27;);
 
         // Checks whether we have a defined controller, and/or no content.
-        var hasDefinedCrossfilter   = !!Ember.get(this, &#x27;_crossfilter&#x27;),
+        var hasDefinedCrossfilter   = !!this._crossfilter,
             hasNoContent            = !content.length;
 
         // If we don&#x27;t want have any content yet, or a defined Crossfilter, then either
@@ -194,13 +235,39 @@ window.EmberCrossfilter = Ember.Mixin.create({
     addFilter: function(key, value) {
 
         // Find the map we&#x27;re referencing by its name, and extract its method.
-        var map     = this.filterMap[key];
-        map.value   = value;
+        var map = this.filterMap[key];
 
-        if (Ember.isArray(value)) {
-            // If we&#x27;re actually dealing with an array then
-            // we want to upgrade the value to an array.
-            map.value = [value[0], value[1]];
+        if (map.method !== &#x27;filterInArray&#x27;) {
+
+            // If we&#x27;re dealing with a native Crossfilter method then we just need
+            // to set the value, and enable the &#x60;active&#x60; property.
+            map.value = value;
+            Ember.set(map, &#x27;active&#x27;, true);
+
+        } else {
+
+            // Otherwise we&#x27;re dealing with a &#x60;filterInArray&#x60;.
+            // Firstly we need to push the value into the list of &#x60;active&#x60; elements,
+            // and ensure it&#x27;s unique.
+            map.active.pushObject(value);
+            map.active = map.active.uniq();
+
+            if (map.boolean === &#x27;or&#x27;) {
+
+                // If the boolean is &quot;OR&quot; then we need to add the bitwise.
+                map.value |= map._mapProperties[value];
+
+            } else {
+
+                if (!Ember.isArray(map.value)) {
+                    // Make it into an array if it isn&#x27;t already.
+                    map.value = [];
+                }
+                // Otherwise it needs to be placed into an array, so that each bitwise
+                // value can be checked separately.
+                map.value.push(map._mapProperties[value]);
+
+            }
         }
 
         // Finally we can begin to update the content in the controller.
@@ -211,11 +278,52 @@ window.EmberCrossfilter = Ember.Mixin.create({
     /**
      * @method removeFilter
      * @param key
+     * @param value
      * Clear the any applied filters to the dimension.
      * @return {void}
      */
-    removeFilter: function(key) {
-        this.addFilter(key, null);
+    removeFilter: function(key, value) {
+
+        // Find the &#x60;filterMap&#x60; that relates to this key.
+        var map = this.filterMap[key];
+
+        if (map.method !== &#x27;filterInArray&#x27;) {
+
+            // If we&#x27;re not dealing with a &#x60;filterInArray&#x60; then we can
+            // set its value to false, and it&#x27;s &#x60;active&#x60; as well.
+            map.value = false;
+            Ember.set(map, &#x27;active&#x27;, false);
+
+        }
+
+        if (map.method === &#x27;filterInArray&#x27;) {
+
+            // Otherwise we&#x27;ll need to take the value out of the list
+            // of active values, and ensure it&#x27;s unique.
+            map.active.removeObject(value);
+            map.active = map.active.uniq();
+
+            if (map.boolean === &#x27;or&#x27;) {
+
+                // If we&#x27;re dealing with an &quot;OR&quot; then it needs to be deducted
+                // from the current bitwise.
+                if (map.value &amp; map._mapProperties[value]) {
+                    map.value ^= map._mapProperties[value];
+                }
+
+            } else {
+
+                // Otherwise we simply take it out of the array.
+                var index = map.value.indexOf(map._mapProperties[value]);
+                map.value.splice(index, 1);
+
+            }
+
+        }
+
+        // Voila!
+        this._updateContent(map);
+
     },
 
     /**
@@ -241,10 +349,16 @@ window.EmberCrossfilter = Ember.Mixin.create({
             // Clear the applied Crossfilter.
             dimension.filterAll();
 
-        }
+            // Clear the &#x60;active&#x60; flag and reset its value.
+            Ember.set(map, &#x27;active&#x27;, false);
+            map.value = null;
 
-        // Clear all of the active filters.
-        Ember.get(this, &#x27;activeFilters&#x27;).clear();
+            if (map.method === &#x27;filterInArray&#x27;) {
+                // If we&#x27;re dealing with a &#x60;filterInArray&#x60;, then its default is 0.
+                map.value = 0;
+            }
+
+        }
 
         // Update the changes with all of the filters removed.
         this._applyContentChanges();
@@ -288,12 +402,47 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * Determines whether the current filter is active by its key.
-     * @param key {String} name of the defined Crossfilter from &#x60;filterMap&#x60;.
-     * @return {Boolean}
+     * @method top
+     * Helper method to find the highest value.
+     * @param key {String}
+     * @param count {Number}
+     * @return {Number|String}
      */
-    isActiveFilter: function(key) {
-        return $.inArray(key, Ember.get(this, &#x27;activeFilters&#x27;)) !== -1;
+    top: function(key, count) {
+        return this._topBottom(key, count, &#x27;top&#x27;);
+    },
+
+    /**
+     * @method bottom
+     * Helper method to find the lowest value.
+     * @param key {String}
+     * @param count {Number}
+     * @return {Number|String}
+     */
+    bottom: function(key, count) {
+        return this._topBottom(key, count, &#x27;bottom&#x27;);
+    },
+
+    /**
+     * @method _topBottom
+     * @param key {String}
+     * @param count {Number}
+     * @param crossfilterMethod {String}
+     * @return {Number|String}
+     * @private
+     */
+    _topBottom: function(key, count, crossfilterMethod) {
+
+        // Assert that we have a &#x60;filterMap&#x60; by this key.
+        Ember.assert(&#x27;Dimension with key &quot;%@&quot; is not defined.&#x27;.fmt(key), !!this.filterMap[key]);
+
+        // Find the map and the related dimension.
+        var map         = this.filterMap[key],
+            dimension   = &#x27;_dimension%@&#x27;.fmt(map.dimension.capitalize());
+
+        // Use Crossfilter method to find the top/bottom.
+        return this[dimension][crossfilterMethod](count || 1)[0];
+
     },
 
     /**
@@ -308,35 +457,20 @@ window.EmberCrossfilter = Ember.Mixin.create({
         var start       = new Date().getTime(),
             dimension   = this[&#x27;_dimension%@&#x27;.fmt(map.dimension.capitalize())];
 
-        if (Ember.isNone(map.value) &amp;&amp; map.method !== &#x27;filterFunction&#x27;) {
+        switch (map.method) {
 
-            // Remove the filter from the list of active filters.
-            Ember.get(this, &#x27;activeFilters&#x27;).removeObject(map.name);
+            // Use the jQuery inArray method if we&#x27;ve defined a filterInArray.
+            case (&#x27;filterInArray&#x27;)  : this._setFilterInArray(map, dimension); break;
 
-            // Clear the dimension of any applied filter.
-            dimension.filterAll();
+            // Invoked when we&#x27;re handling a filterRange dimension.
+            case (&#x27;filterRangeMin&#x27;)  : this._setFilterRangeMin(map, dimension); break;
+            case (&#x27;filterRangeMax&#x27;)  : this._setFilterRangeMax(map, dimension); break;
 
-        } else {
+            // We need to apply a special callback if we&#x27;re dealing with a filterFunction.
+            case (&#x27;filterFunction&#x27;) : this._setFilterFunction(map, dimension); break;
 
-            // Add the filter to the list of active filters.
-            Ember.get(this, &#x27;activeFilters&#x27;).pushObject(map.name);
-
-            switch (map.method) {
-
-                // Use the jQuery inArray method if we&#x27;ve defined a filterInArray.
-                case (&#x27;filterInArray&#x27;)  : this._setFilterInArray(map, dimension); break;
-
-                // Invoked when we&#x27;re handling a filterRange dimension.
-                case (&#x27;filterRangeMin&#x27;)  : this._setFilterRangeMin(map, dimension); break;
-                case (&#x27;filterRangeMax&#x27;)  : this._setFilterRangeMax(map, dimension); break;
-
-                // We need to apply a special callback if we&#x27;re dealing with a filterFunction.
-                case (&#x27;filterFunction&#x27;) : this._setFilterFunction(map, dimension); break;
-
-                // Otherwise we can use the old-fashioned Crossfilter method.
-                default                 : dimension[map.method](map.value); break;
-
-            }
+            // Otherwise we can use the old-fashioned Crossfilter method.
+            default                 : dimension[map.method](map.value); break;
 
         }
 
@@ -363,6 +497,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
             content             = defaultDimension.filterAll().top(Infinity);
 
         if (Ember.get(this, &#x27;sort.sortProperty&#x27;)) {
+            // Sort the content if the user has defined the &#x60;sort&#x60; object.
             content = this._sortedContent(content, Ember.get(this, &#x27;sort.sortProperty&#x27;), Ember.get(this, &#x27;sort.isAscending&#x27;));
         }
 
@@ -417,10 +552,20 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
             // Add the name property to the filterMap method for using in setFilterRangeMin/setFilterRangeMax.
             this.filterMap[filter].name = filter;
-            this.filterMap[filter].value = null;
 
             // Reduce this iteration to a simpler variable.
             filter = this.filterMap[filter];
+
+            // Define the value on the &#x60;filterMap&#x60;.
+            filter.value    = null;
+
+            Ember.set(filter, &#x27;active&#x27;, false);
+
+            if (filter.method === &#x27;filterInArray&#x27;) {
+                Ember.set(filter, &#x27;active&#x27;, []);
+                // We need to apply some special behaviour if it&#x27;s a &#x60;filterInArray&#x60;.
+                this._createFilterInArray(filter);
+            }
 
             // Define the defined dimension in the controller.
             var name = &#x27;_dimension%@&#x27;.fmt(filter.dimension.capitalize());
@@ -428,6 +573,88 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         }
 
+    },
+    
+    _createFilterInArray: function(map) {
+        
+        var start = new Date().getTime();
+
+        // Initialise all of the variables, and find a unique list of the properties
+        // in the models for this property.
+        var allProperties   = this.mapProperty(map.property).uniq(),
+            properties      = [].concat.apply([], allProperties).uniq(),
+            propertyName    = map.property,
+            propertiesMap   = {},
+            totalBitwise    = 0,
+            currentIndex    = 0;
+
+        // Loop through all of the unique properties from the controller&#x27;s models.
+        for (var propertyIndex in properties) {
+
+            if (!properties.hasOwnProperty(propertyIndex)) {
+                // Don&#x27;t continue if it&#x27;s not in the immediate prototype.
+                continue;
+            }
+
+            // Otherwise we can assign a unique bitwise to this property, and increment
+            // the total bitwise.
+            var propertyBitwise = (1 &lt;&lt; currentIndex++);
+            totalBitwise ^= propertyBitwise;
+
+            // Finally we can define the property&#x27;s bitwise, and place it into a convenient object.
+            propertiesMap[properties[propertyIndex]] = propertyBitwise;
+        }
+
+        // Set the items on the relevant &#x60;filterMap&#x60;.
+        map.property         = &#x27;__ecBitwise%@&#x27;.fmt(map.name.capitalize());
+        map.value            = 0;
+        map._totalBitwise    = totalBitwise;
+        map._mapProperties   = propertiesMap;
+
+        // Iterate over all of the models in the current controller.
+        for (var modelIndex = 0, numModels = Ember.get(this, &#x27;content.length&#x27;); modelIndex &lt;= numModels; modelIndex++) {
+
+            // Find the model based on the current &#x60;modelIndex&#x60;.
+            var model = Ember.get(this, &#x27;content.%@&#x27;.fmt(modelIndex));
+    
+            if (!model) {
+                // If we don&#x27;t have a model, then we can&#x27;t continue.
+                continue;
+            }
+
+            // Find the colours for this model, and initialise its bitwise.
+            var colours     = Ember.get(model, propertyName),
+                itemBitwise = 0;
+
+            // Loop through each of the individual properties defined in this model, based on the property
+            // we care about from the &#x60;filterMap&#x60;.
+            for (var colourIndex = 0, numItems = colours.length; colourIndex &lt;= numItems; colourIndex++) {
+
+                // Find the actual value of the property.
+                var propertyValue = colours[colourIndex];
+    
+                if (!propertyValue) {
+                    // If it&#x27;s empty then we don&#x27;t want it.
+                    continue;
+                }
+
+                // Otherwise we can incrementally calculate this model&#x27;s bitwise based on
+                // the properties it has.
+                itemBitwise ^= map._mapProperties[propertyValue];
+
+            }
+
+            // Finally we can set the __ecBitwise* property on the model for later reference.
+            // @todo: Create this using defineProperty so that we can remove its &#x60;enumerable&#x60; flag.
+            model[map.property] = itemBitwise;
+
+        }
+
+        if (this.allowDebugging) {
+            // Calculate how long it took to create this bitwise stuff.
+            Ember.debug(&#x27;Properties: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+        }
+    
     },
 
     /**
@@ -462,12 +689,57 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * Implement a missing Crossfilter method for checking the inArray, although
      * if you have a small array, then you might be better off using bitwise
      * against the filterFunction method.
+     * @return {void}
      * @private
      */
     _setFilterInArray: function(map, dimension) {
 
+        if (map.boolean === &#x27;and&#x27;) {
+
+            dimension.filterFunction(function(d) {
+
+                if (map.value === 0) {
+                    // If the value is zero, then we&#x27;ll return &#x60;true&#x60; so that
+                    // no items get removed using this filter.
+                    return true;
+                }
+
+                var hasAllValues = true;
+
+                // Loop through ALL of the values set on this filter.
+                map.value.forEach(function(value) {
+
+                    // ...And ensure that each one is in the model.
+                    if ((d &amp; value) === 0) {
+
+                        // If not, then it fails the AND boolean.
+                        hasAllValues = false;
+                        return false;
+
+                    }
+
+                });
+
+                // Whether or not this model has all of the items we&#x27;re after.
+                return hasAllValues;
+
+            });
+
+            return;
+
+        }
+
         dimension.filterFunction(function(d) {
-            return $.inArray(map.value, d) !== -1;
+
+            // If the value is zero, then we&#x27;ll return &#x60;true&#x60; so that
+            // no items get removed using this filter.
+            if (map.value === 0) {
+                return true;
+            }
+
+            // We can then perform a simple bitwise calculation.
+            return map.value &amp; d;
+
         });
 
     },
@@ -482,10 +754,19 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @private
      */
     _setFilterFunction: function(map, dimension) {
+        if (map.value === false) {
+            // Remove the custom filter.
+            dimension.filterAll();
+            return;
+        }
 
-        var methodName = &#x27;_apply%@&#x27;.fmt(map.dimension.capitalize());
+        var methodName = &#x27;_apply%@&#x27;.fmt(map.name.capitalize());
         Ember.assert(&#x27;Crossfilter &#x60;filterFunction&#x60; expects a callback named &#x60;%@&#x60;.&#x27;.fmt(methodName), !!Ember.canInvoke(this, methodName));
-        dimension.filterFunction(this[methodName]);
+
+        var controller = this;
+        dimension.filterFunction(function(d) {
+            return controller[methodName].apply(controller, [d]);
+        });
 
     },
 
@@ -506,7 +787,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Apply the filter using the existing maximum value, if it exists.
         var maxValue = this.filterMap[minName].value;
-        dimension.filterRange([map.value, maxValue || Infinity]);
+        dimension.filterRange([map.value || -Infinity, maxValue || Infinity]);
 
     },
 
@@ -527,7 +808,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Apply the filter using the existing minimum value, if it exists.
         var minValue = this.filterMap[maxName].value;
-        dimension.filterRange([minValue || -Infinity, map.value]);
+        dimension.filterRange([minValue || -Infinity, map.value || Infinity]);
 
     }
 
