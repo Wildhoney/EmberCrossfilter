@@ -274,8 +274,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param count {Number}
      * @return {Number|String}
      */
-    top: function(key, count) {
-        return this._topBottom(key, count, 'top');
+    top: function(property, count) {
+        return this._topBottom(property, count, 'top');
     },
 
     /**
@@ -285,8 +285,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param count {Number}
      * @return {Number|String}
      */
-    bottom: function(key, count) {
-        return this._topBottom(key, count, 'bottom');
+    bottom: function(property, count) {
+        return this._topBottom(property, count, 'bottom');
     },
 
     /**

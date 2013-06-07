@@ -1,75 +1,69 @@
 EmberCrossfilter
 ================
 
-Instead of using Ember DataStore, EmberCrossfilter provides a basic architecture for creating Ember models with Crossfilter. Simply include the EmberCrossfilter mixin in your controller, and you're all ready to go!
+Ember DS is slow in comparison to Crossfilter. However, Crossfilter is not the easiest to get started with, and people starting out with Crossfilter find themselves in a pickle. That's why I've created a facade for working with Crossfilter with Ember.
 
-Why choose Crossfilter?
+Out of the box, EmberCrossfilter provides:
+
+* Create simple filters, such as ranges, custom callbacks, exact matches;
+* Create more complicated boolean filters, such as OR/AND (`filterInArray`);
+* Ability to determine which filters are active;
+* Find the highest/lowest values quickly (`top`/`bottom`);
+* Naturally sort an array using the `sort` object;
+* Ability to extend `EmberCrossfilter` by accessing the `_crossfilter` property;
+
+Its Methods
 -------------
 
-Crossfilter uses JavaScript's typed arrays to allow for much quicker sorting and filtering. It is proven to be numerous times faster than native JavaScript filtering methods; therefore when large amounts of data is involved, Crossfilter is provides a much better user experience.
+`EmberCrossfilter` provides a simple interface with a minimal footprint.
 
+It exposes the following public methods:
 
-What is EmberCrossfilter?
+* `isActiveFilter(key, filter)` &ndash; determines whether a filter is currently active, and if a value is specified, whether the value equals that;
+* `addFilter(key, value)` &ndash; add a new filter to filter against;
+* `removeFilter(key, value)` &ndash; remove a filter that's already been applied using `addFilter`;
+* `clearAllFilters` &ndash; clears all of the applied filters;
+* `sortContent(property, isAscending)` &ndash; filters the content based on a property from the model;
+* `top(property, count)` &ndash; a helper method for finding the highest value of `property`;
+* `bottom(property, count)` &ndash; same as above, but the lowest value;
+
+Timing
 -------------
 
-I've created EmberCrossfilter to allow a simple configuration to drive the automatic creation of Crossfilter dimensions, and two methods for applying and clearing filters.
-
-EmberCrossfilter supports *all* Crossfilter filtering methods, and even implements one that I believe is missing: being able to filter using jQuery's `inArray`.
-
-When using Crossfilter, a common mistake is to replace the `content` property with `crossfilter(content)`, however, with EmberCrossfilter we only update the `content` with plain old JavaScript arrays, which allows for much easier debugging.
+As Crossfilter is known to be extremely fast in comparison to both Ember DS and native JavaScript filtering/sorting, `EmberCrossfilter` likes to prove it &ndash; to see the timing outputs in your console, simply set `allowDebugging` to `true` in your controller that implements the `EmberCrossfilter` mixin, and you'll see how long various operations took in milliseconds.
 
 
-How do I use it?
+Sorting
 -------------
 
-EmberCrossfilter can be configured with one configuration object (`filterMap`).
+To set the default sorting direction for when `EmberCrossfilter` is initialised, you can supply a `sort` object in your controller.
 
-In the bundled example we have the following configuration:
+The following will sort descending by the `name` property:
 
-	filterMap: {
-		colour: { property: 'colours', dimension: 'colour',  method: 'filterInArray' },
-		minAge: { property: 'age', dimension: 'age', method: 'filterRangeMin' },
-		maxAge: { property: 'age', dimension: 'age', method: 'filterRangeMax' },
-		name:   { property: 'name', dimension: 'name', method: 'filterExact' },
-		isCute: { property: 'cuteness', dimension: 'cuteness', method: 'filterFunction' }
-	}
+	sort: { sortProperty: 'name', isAscending: false }
 	
-This `filterMap` creates a total of 4 dimensions (`colour`, `age`, and `name`):
+If you'd like to trigger sorting updates from your controllers/views, then you can invoke the `sortContent` method with the property, and the direction (ascending/descending), and `EmberCrossfilter` will update the `sort` object for you to reflect the changes.
 
-<table>
-    <tr>
-        <td>Dimension name</td>
-        <td>Model property</td>
-        <td>Crossfilter method</td>
-    </tr>
-    <tr>
-	<td><code>minAge</code></td>
-	<td><code>age</code></td>
-	<td><code>filterRange</code></td>
-    </tr>
-    <tr>
-	<td><code>maxAge</code></td>
-	<td><code>age</code></td>
-	<td><code>filterRange</code></td>
-    </tr>
-    <tr>
-	<td><code>name</code></td>
-	<td><code>name</code></td>
-	<td><code>filterExact</code></td>
-    </tr>
-    <tr>
-	<td><code>colours`</td>
-	<td><code>colour`</td>
-	<td><code>filterInArray`</td>
-    </tr>
-    <tr>
-	<td><code>name</code></td>
-	<td><code>name</code></td>
-	<td><code>filterExact</code></td>
-    </tr>
-</table>
+The following will change the sorting to sort ascending by the `age` property:
+
+	sortContent('age', true);
 
 
-For the `filterRange` we must specify the array as two entries, we can then update each one independent of the other as we would with other dimension types.
+More Complicated Stuff: Crossfilter's Missing Child
+-------------
 
-For example, I could set the `minAge` with the following: `addFilter('minAge', 5);` I can also set the maxAge on its own: `addFilter('maxAge', 5);` the only caveat is that the convention is to specify both sides of the `filterRange`, so we'd need to specify: `minNumberOfX`/`maxNumberOfX`, always using the `min`/`max` prefix.
+When using Crossfilter, it became apparent that comparing two arrays was naturally slow in Crossfilter, such as when you had `[1, 2, 3]` and you wanted only models with those values set. `EmberCrossfilter` rectifies that issue by offering a bitwise solution (`filterInArray`) which does all the hard-work for you. It can be configured to use OR/AND.
+
+*AND (`boolean: 'and'`)*
+
+If you've set `['Italy', 'Russia']` then a model must have BOTH of these values to be considered valid.
+
+Valid: ['Italy', 'Russia', 'Spain']
+Invalid: ['Italy', 'Brazil', 'India']
+
+*OR (`boolean: 'or'`)*
+
+In this case if you've set `['Italy', 'Russia']`, then a model can have either or both of these to be considered valid.
+
+Valid: ['Italy', 'Haiti']
+Invalid: ['Portugal', 'Latvia']

@@ -134,7 +134,9 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {Boolean} whether or not it was successful.
      */
 //    reinitialiseCrossfilter: function() {
+//
 //        this._crossfilter = null;
+//        this.clearAllFilters();
 //
 //        for (var key in this) {
 //
@@ -146,6 +148,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 //        }
 //
 //        return this._createCrossfilter();
+//
 //    },
 
     /**
@@ -175,53 +178,6 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Otherwise the &#x60;active&#x60; property will tell us.
         return Ember.get(map, &#x27;active&#x27;) === true;
-
-    },
-
-    /**
-     * @method _createCrossfilter
-     * Creates the Crossfilter from the content.
-     * @return {Boolean}
-     * @private
-     */
-    _createCrossfilter: function() {
-
-        // Assert that we have the &#x60;filterMap&#x60; property for configuring EmberCrossfilter.
-        Ember.assert(&#x27;Controller implements EmberCrossfilter but &#x60;filterMap&#x60; has not been specified.&#x27;, !!this.filterMap);
-
-        // Create the Crossfilter, and then create the dimensions.
-        var content = Ember.get(this, &#x27;content&#x27;);
-
-        // Checks whether we have a defined controller, and/or no content.
-        var hasDefinedCrossfilter   = !!this._crossfilter,
-            hasNoContent            = !content.length;
-
-        // If we don&#x27;t want have any content yet, or a defined Crossfilter, then either
-        // the content hasn&#x27;t been loaded yet, or we&#x27;ve already created the Crossfilter.
-        if (hasNoContent || hasDefinedCrossfilter) {
-            return false;
-        }
-
-        // Remove the observer because we don&#x27;t want to keep triggering this method when
-        // the content updates.
-        Ember.removeObserver(this, &#x27;content.length&#x27;, this, &#x27;_createCrossfilter&#x27;);
-
-        // Create the Crossfilter and its related dimensions.
-        this._crossfilter = crossfilter(content);
-        this._createDimensions();
-
-        if (Ember.get(this, &#x27;sort.sortProperty&#x27;)) {
-
-            // Gather the details for the sorting.
-            var sortProperty    = Ember.get(this, &#x27;sort.sortProperty&#x27;),
-                sortAscending   = Ember.get(this, &#x27;sort.isAscending&#x27;);
-
-            // If we have a sort.sortProperty then we can sort the content straight away.
-            Ember.set(this, &#x27;content&#x27;, this._sortedContent(content, sortProperty, sortAscending));
-
-        }
-
-        return true;
 
     },
 
@@ -408,8 +364,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param count {Number}
      * @return {Number|String}
      */
-    top: function(key, count) {
-        return this._topBottom(key, count, &#x27;top&#x27;);
+    top: function(property, count) {
+        return this._topBottom(property, count, &#x27;top&#x27;);
     },
 
     /**
@@ -419,8 +375,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param count {Number}
      * @return {Number|String}
      */
-    bottom: function(key, count) {
-        return this._topBottom(key, count, &#x27;bottom&#x27;);
+    bottom: function(property, count) {
+        return this._topBottom(property, count, &#x27;bottom&#x27;);
     },
 
     /**
@@ -442,6 +398,53 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Use Crossfilter method to find the top/bottom.
         return this[dimension][crossfilterMethod](count || 1)[0];
+
+    },
+
+    /**
+     * @method _createCrossfilter
+     * Creates the Crossfilter from the content.
+     * @return {Boolean}
+     * @private
+     */
+    _createCrossfilter: function() {
+
+        // Assert that we have the &#x60;filterMap&#x60; property for configuring EmberCrossfilter.
+        Ember.assert(&#x27;Controller implements EmberCrossfilter but &#x60;filterMap&#x60; has not been specified.&#x27;, !!this.filterMap);
+
+        // Create the Crossfilter, and then create the dimensions.
+        var content = Ember.get(this, &#x27;content&#x27;);
+
+        // Checks whether we have a defined controller, and/or no content.
+        var hasDefinedCrossfilter   = !!this._crossfilter,
+            hasNoContent            = !content.length;
+
+        // If we don&#x27;t want have any content yet, or a defined Crossfilter, then either
+        // the content hasn&#x27;t been loaded yet, or we&#x27;ve already created the Crossfilter.
+        if (hasNoContent || hasDefinedCrossfilter) {
+            return false;
+        }
+
+        // Remove the observer because we don&#x27;t want to keep triggering this method when
+        // the content updates.
+        Ember.removeObserver(this, &#x27;content.length&#x27;, this, &#x27;_createCrossfilter&#x27;);
+
+        // Create the Crossfilter and its related dimensions.
+        this._crossfilter = crossfilter(content);
+        this._createDimensions();
+
+        if (Ember.get(this, &#x27;sort.sortProperty&#x27;)) {
+
+            // Gather the details for the sorting.
+            var sortProperty    = Ember.get(this, &#x27;sort.sortProperty&#x27;),
+                sortAscending   = Ember.get(this, &#x27;sort.isAscending&#x27;);
+
+            // If we have a sort.sortProperty then we can sort the content straight away.
+            Ember.set(this, &#x27;content&#x27;, this._sortedContent(content, sortProperty, sortAscending));
+
+        }
+
+        return true;
 
     },
 
@@ -526,13 +529,14 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
             if (this[name]) {
                 // We&#x27;ve already defined this dimension (probably a filterRange).
-                return;
+//                return;
+                delete this[name];
             }
 
             // Define the property using the JS 1.8.5 way.
             Object.defineProperty(this, name, {
                 enumerable: false,
-                configurable: false,
+                configurable: true,
                 writable: false,
                 value: this._crossfilter.dimension(function(d) {
                     return d[property];
@@ -645,8 +649,12 @@ window.EmberCrossfilter = Ember.Mixin.create({
             }
 
             // Finally we can set the __ecBitwise* property on the model for later reference.
-            // @todo: Create this using defineProperty so that we can remove its &#x60;enumerable&#x60; flag.
-            model[map.property] = itemBitwise;
+            Object.defineProperty(model, map.property, {
+                enumerable: false,
+                configurable: true,
+                writable: false,
+                value: itemBitwise
+            });
 
         }
 
