@@ -16,9 +16,9 @@ describe('Ember Crossfilter', function() {
                     { id: 4, name: 'Jimmy', age: 12, colours: ['black'], country: ['Iran'], cuteness: 3 },
                     { id: 5, name: 'Masha', age: 4, colours: ['brown', 'black', 'beige'], country: ['Brazil'], cuteness: 14 },
                     { id: 6, name: 'Gorge', age: 6, colours: ['blue', 'grey'], country: ['Iran'], cuteness: 7 },
-                    { id: 7, name: 'Milly', age: 7, colours: ['black', 'white', 'ginger'], country: ['Russia'], cuteness: 8 },
+                    { id: 7, name: 'Milly', age: 7, colours: ['black', 'white', 'ginger'], country: ['Russia', 'Britain', 'Spain'], cuteness: 8 },
                     { id: 8, name: 'Honey', age: 7, colours: ['white'], country: 'Spain', cuteness: 12 },
-                    { id: 9, name: 'Simon', age: 15, colours: ['black', 'white', 'grey'], country: ['Britain'], cuteness: 5 },
+                    { id: 9, name: 'Simon', age: 15, colours: ['black', 'white', 'grey'], country: ['Britain', 'Russia'], cuteness: 5 },
                     { id: 10, name: 'Julia', age: 11, colours: ['black', 'grey', 'ginger'], country: ['Russia'], cuteness: 13 }
                 ]);
             },
@@ -226,20 +226,20 @@ describe('Ember Crossfilter', function() {
 
         it('Can set singular items using the AND operator.', function() {
             controller.addFilter('country', 'Britain');
-            expect(Ember.get(controller, 'content.length')).toEqual(2);
+            expect(Ember.get(controller, 'content.length')).toEqual(3);
         });
 
         it('Can set multiple items using the AND operator.', function() {
             controller.addFilter('country', 'Britain');
             controller.addFilter('country', 'Russia');
-            expect(Ember.get(controller, 'content.length')).toEqual(1);
+            expect(Ember.get(controller, 'content.length')).toEqual(3);
         });
 
         it('Can set multiple items using the AND operator with remove.', function() {
             controller.addFilter('country', 'Britain');
             controller.addFilter('country', 'Russia');
             controller.removeFilter('country', 'Russia');
-            expect(Ember.get(controller, 'content.length')).toEqual(2);
+            expect(Ember.get(controller, 'content.length')).toEqual(3);
         });
 
         it('Can set singular items using the OR operator.', function() {
