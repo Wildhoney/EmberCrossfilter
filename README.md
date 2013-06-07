@@ -30,7 +30,7 @@ It exposes the following public methods:
 Timing
 -------------
 
-As Crossfilter is known to be extremely fast in comparison to both Ember DS and native JavaScript filtering/sorting, `EmberCrossfilter` likes to prove it &ndash; to see the timing outputs in your console, simply set `allowDebugging` to `true` in your controller that implements the `EmberCrossfilter` mixin, and you'll see how long various operations took in milliseconds.
+If you'd like to see the timing outputs in your console, simply set `allowDebugging` to `true` in your controller that implements the `EmberCrossfilter` mixin, and you'll see how long various operations took in milliseconds.
 
 
 Sorting
