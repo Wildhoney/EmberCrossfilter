@@ -1,7 +1,7 @@
 EmberCrossfilter
 ================
 
-Ember DS is slow in comparison to Crossfilter. However, Crossfilter is not the easiest to get started with, and people starting out with Crossfilter find themselves in a pickle. That's why I've created a facade for working with Crossfilter with Ember.
+Both Ember DS and native JavaScript filtering methods are slow in comparison to Crossfilter. However, Crossfilter is not the easiest to get started with, and people starting out with Crossfilter find themselves in a pickle. That's why I've created a facade for working with Crossfilter with Ember. If you wish to go with your own implementation, then `EmberCrossfilter` also serves as a nice reference, and an example of a good implementation.
 
 Out of the box, EmberCrossfilter provides:
 
@@ -9,10 +9,10 @@ Out of the box, EmberCrossfilter provides:
 * Create more complicated boolean filters, such as OR/AND (`filterInArray`);
 * Ability to determine which filters are active;
 * Find the highest/lowest values quickly (`top`/`bottom`);
-* Naturally sort an array using the `sort` object;
+* Naturally sort an array using the `sort` object, and modify using the `sortContent` method;
 * Ability to extend `EmberCrossfilter` by accessing the `_crossfilter` property;
 
-Its Methods
+Methods
 -------------
 
 `EmberCrossfilter` provides a simple interface with a minimal footprint.
@@ -54,16 +54,16 @@ More Complicated Stuff: Crossfilter's Missing Child
 
 When using Crossfilter, it became apparent that comparing two arrays was naturally slow in Crossfilter, such as when you had `[1, 2, 3]` and you wanted only models with those values set. `EmberCrossfilter` rectifies that issue by offering a bitwise solution (`filterInArray`) which does all the hard-work for you. It can be configured to use OR/AND.
 
-*AND (`boolean: 'and'`)*
+**AND (`boolean: 'and'`)**
 
 If you've set `['Italy', 'Russia']` then a model must have BOTH of these values to be considered valid.
 
-Valid: ['Italy', 'Russia', 'Spain']
-Invalid: ['Italy', 'Brazil', 'India']
+* Valid: ['Italy', 'Russia', 'Spain']
+* Invalid: ['Italy', 'Brazil', 'India']
 
-*OR (`boolean: 'or'`)*
+**OR (`boolean: 'or'`)**
 
 In this case if you've set `['Italy', 'Russia']`, then a model can have either or both of these to be considered valid.
 
-Valid: ['Italy', 'Haiti']
-Invalid: ['Portugal', 'Latvia']
+* Valid: ['Italy', 'Haiti']
+* Invalid: ['Portugal', 'Latvia']
