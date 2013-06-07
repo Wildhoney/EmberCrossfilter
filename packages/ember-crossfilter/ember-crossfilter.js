@@ -555,8 +555,12 @@ window.EmberCrossfilter = Ember.Mixin.create({
             }
 
             // Finally we can set the __ecBitwise* property on the model for later reference.
-            // @todo: Create this using defineProperty so that we can remove its `enumerable` flag.
-            model[map.property] = itemBitwise;
+            Object.defineProperty(model, map.property, {
+                enumerable: false,
+                configurable: false,
+                writable: false,
+                value: itemBitwise
+            });
 
         }
 
