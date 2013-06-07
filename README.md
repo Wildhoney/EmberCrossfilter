@@ -47,7 +47,12 @@ If you'd like to trigger sorting updates from your controllers/views, then you c
 The following will change the sorting to sort ascending by the `age` property:
 
 	sortContent('age', true);
+	
+	
+Updates
+-------------
 
+`EmberCrossfilter` doesn't provide any mechanism for determining if the `content` has been updated. If you'd like to know when an update has occurred, then you can observer the `content.length` property on your controller.
 
 More Complicated Stuff: Crossfilter's Missing Child
 -------------
