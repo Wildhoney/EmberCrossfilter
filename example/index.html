@@ -50,10 +50,12 @@
         </ul>
 
         <ul>
-            <li>{{#view view.Filter key="colour" value="black"}}Cats who are coloured black{{/view}}</li>
-            <li>{{#view view.Filter key="minAge" value=8}}Cats who are younger than 8{{/view}}</li>
-            <li>{{#view view.Filter key="maxAge" value=5}}Cats who are older than 5{{/view}}</li>
+            <li>{{#view view.Filter key="colour" value="black"}}Cats who are coloured black{{/view}} <strong>or</strong> {{#view view.Filter key="colour" value="beige"}}coloured beige{{/view}}</li>
+            <li>{{#view view.Filter key="country" value="Russia"}}Cats who live in Russia{{/view}} <strong>and</strong> {{#view view.Filter key="country" value="Britain"}}and Britain{{/view}}</li>
+            <li>{{#view view.Filter key="minAge" value=5}}Cats who are older than 5{{/view}}</li>
+            <li>{{#view view.Filter key="maxAge" value=8}}Cats who are younger than 8{{/view}}</li>
             <li>{{#view view.Filter key="name" value="Boris"}}Cats who are called Boris{{/view}}</li>
+            <li>{{#view view.Filter key="partialName" value="R"}}Cats who have "R" in their name{{/view}}</li>
             <li>{{#view view.Filter key="isCute" value=true}}Cats who are considered to be cute{{/view}}</li>
         </ul>
 
@@ -67,6 +69,7 @@
                     <ul>
                         <li>Age: {{age}}</li>
                         <li>Colours: {{colours}}</li>
+                        <li>Place of Origin: {{country}}</li>
                         <li>Cuteness Level: {{cuteness}}</li>
                     </ul>
                 </li>

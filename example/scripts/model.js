@@ -13,6 +13,12 @@ App.CatModel = Ember.Object.extend({
     name: null,
 
     /**
+     * @property country
+     * @type {String}
+     */
+    country: null,
+
+    /**
      * @property age
      * @type {Number}
      */

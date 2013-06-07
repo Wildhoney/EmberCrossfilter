@@ -1,0 +1,115 @@
+/** { font-family: Arial, Tahoma, Helvetica, sans-serif; font-size: 12px; }*/
+/*ul li ul { margin-bottom: 20px; }*/
+/*ul li.details { list-style: none; }*/
+/*a { color: #a266bb; text-decoration: underline; cursor: pointer; }*/
+/*a.active { color: black; }*/
+/*h1 { font-size: 16px; }*/
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Tahoma, Helvetica;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+}
+
+div.filters {
+    height: 100%;
+    float: left;
+}
+
+div.filters div.header {
+    height: 15%;
+    width: 100%;
+    float: left;
+    line-height: 120px;
+    background: #8d7c97 url('./../cat.png') no-repeat 15px center;
+    border-bottom: 1px solid #776880;
+    padding-left: 100px;
+    font-size: 32px;
+    color: #545454;
+}
+
+div.filters ul.filters {
+    border-right: 1px solid #b6a2c2;
+    overflow: hidden;
+    background-color: #d3c6db;
+    list-style-type: none;
+    height: 85%;
+}
+
+div.filters ul.filters li {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 15px 0 15px;
+}
+
+div.filters ul.filters li:not(.title) {
+    border-bottom: 1px solid #ebe2f0;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+div.filters ul.filters li:not(.title):hover {
+    background-color: #e1d0ec;
+}
+
+div.filters ul.filters li:not(.title) input {
+    background-color: #e9e1ee;
+    border: 0;
+    height: 25px;
+    line-height: 25px;
+    width: 70%;
+    padding: 0 10px 0 10px;
+}
+
+div.filters ul.filters li.title {
+    background-color: #ac9cb6;
+    font-weight: bold;
+    color: white;
+    font-size: 12px;
+}
+
+div.list {
+    float: left;
+    overflow: hidden;
+    width: 80%;
+    background-color: #757575;
+    height: 100%;
+    box-shadow: inset 5px 0 15px -5px rgba(0, 0, 0, .45);
+}
+
+div.list h1 {
+    height: 15%;
+    padding: 3% 0 0 25px;
+    color: white;
+}
+
+div.list table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+div.list table tr th {
+    height: 40px;
+    line-height: 40px;
+    background-color: rgba(0, 0, 0, .25);
+    color: white;
+    font-size: 12px;
+    text-align: left;
+    padding: 0 15px 0 15px;
+}
+
+div.list table tr td {
+    height: 40px;
+    width: 25%;
+    line-height: 40px;
+    padding: 0 10px 0 10px;
+    font-size: 12px;
+    color: lightgrey;
+    border-bottom: 1px solid rgba(255, 255, 255, .05)
+}

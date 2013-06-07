@@ -53,9 +53,9 @@ App.CatsView = Ember.View.extend({
             var key         = this.get('key'),
                 controller  = this.get('controller');
 
-            return controller.isActiveFilter(key);
+            return controller.isActiveFilter(key, this.get('value'));
 
-        }.property('controller.activeFilters.length')
+        }.property('controller.content.length')
 
     })
 
