@@ -19,7 +19,7 @@ Methods
 
 It exposes the following public methods:
 
-* `isActiveFilter(key, filter)` &ndash; determines whether a filter is currently active, and if a value is specified, whether the value equals that;
+* `isActiveFilter(key, value)` &ndash; determines whether a filter is currently active, with an optional `value` parameter for specificity.
 * `addFilter(key, value)` &ndash; add a new filter to filter against;
 * `removeFilter(key, value)` &ndash; remove a filter that's already been applied using `addFilter`;
 * `clearAllFilters` &ndash; clears all of the applied filters;
