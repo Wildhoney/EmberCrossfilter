@@ -488,14 +488,21 @@ window.EmberCrossfilter = Ember.Mixin.create({
         }
 
     },
-    
+
+    /**
+     * @method _createFilterInArray
+     * @param map {Object}
+     * Responsible for setting up the `filterInArray` methods by attaching a bitwise operator
+     * to each model.
+     * @private
+     */
     _createFilterInArray: function(map) {
         
         var start = new Date().getTime();
 
         // Initialise all of the variables, and find a unique list of the properties
         // in the models for this property.
-        var allProperties   = this.mapProperty(map.property).uniq(),
+        var allProperties   = this.mapProperty(map.property),
             properties      = [].concat.apply([], allProperties).uniq(),
             propertyName    = map.property,
             propertiesMap   = {},
@@ -520,17 +527,19 @@ window.EmberCrossfilter = Ember.Mixin.create({
         }
 
         // Set the items on the relevant `filterMap`.
-        map.property         = '__ecBitwise%@'.fmt(map.name.capitalize());
-        map.value            = 0;
-        map._totalBitwise    = totalBitwise;
-        map._mapProperties   = propertiesMap;
+        map.property        = '__ecBitwise%@'.fmt(map.name.capitalize());
+        map.value           = 0;
+        map._totalBitwise   = totalBitwise;
+        map._mapProperties  = propertiesMap;
+
+        var content         = Ember.get(this, 'content');
 
         // Iterate over all of the models in the current controller.
         for (var modelIndex = 0, numModels = Ember.get(this, 'content.length'); modelIndex <= numModels; modelIndex++) {
 
             // Find the model based on the current `modelIndex`.
-            var model = Ember.get(this, 'content.%@'.fmt(modelIndex));
-    
+            var model = content.objectAt(modelIndex);
+
             if (!model) {
                 // If we don't have a model, then we can't continue.
                 continue;

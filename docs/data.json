@@ -354,7 +354,24 @@
         },
         {
             "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
-            "line": 578,
+            "line": 492,
+            "itemtype": "method",
+            "name": "_createFilterInArray",
+            "params": [
+                {
+                    "name": "map",
+                    "description": "\nResponsible for setting up the `filterInArray` methods by attaching a bitwise operator\nto each model.",
+                    "type": "Object"
+                }
+            ],
+            "access": "private",
+            "tagname": "",
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
+            "line": 587,
             "itemtype": "method",
             "name": "_sortedContent",
             "params": [
@@ -385,7 +402,7 @@
         },
         {
             "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
-            "line": 603,
+            "line": 612,
             "itemtype": "method",
             "name": "_setFilterInArray",
             "params": [
@@ -409,7 +426,7 @@
         },
         {
             "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
-            "line": 665,
+            "line": 674,
             "itemtype": "method",
             "name": "_setFilterFunction",
             "params": [
@@ -429,7 +446,7 @@
         },
         {
             "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
-            "line": 691,
+            "line": 700,
             "itemtype": "method",
             "name": "_setFilterRangeMin",
             "params": [
@@ -449,7 +466,7 @@
         },
         {
             "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
-            "line": 712,
+            "line": 721,
             "itemtype": "method",
             "name": "_setFilterRangeMax",
             "params": [
