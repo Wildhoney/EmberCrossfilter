@@ -48,7 +48,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Find the relevant `filterMap`.
         var map = this.filterMap[key];
 
-        // If we're dealing with a `filterInArray`, then we need to provide a
+        // If we're dealing with a `filterInArray`, then we need to perform a
         // small calculation on it.
         if (map.method === 'filterInArray') {
 
@@ -520,16 +520,16 @@ window.EmberCrossfilter = Ember.Mixin.create({
                 continue;
             }
 
-            // Find the colours for this model, and initialise its bitwise.
-            var colours     = Ember.get(model, propertyName),
-                itemBitwise = 0;
+            // Find the desired properties for this model, and initialise its bitwise.
+            var propertiesList  = Ember.get(model, propertyName),
+                itemBitwise     = 0;
 
             // Loop through each of the individual properties defined in this model, based on the property
             // we care about from the `filterMap`.
-            for (var colourIndex = 0, numItems = colours.length; colourIndex <= numItems; colourIndex++) {
+            for (var propertyIndex = 0, numItems = propertiesList.length; propertyIndex <= numItems; propertyIndex++) {
 
                 // Find the actual value of the property.
-                var propertyValue = colours[colourIndex];
+                var propertyValue = propertiesList[propertyIndex];
     
                 if (!propertyValue) {
                     // If it's empty then we don't want it.
@@ -576,7 +576,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         var sorted = sortAlgorithm(content, 0, content.length);
 
         if (!isAscending) {
-            // If we want it in ascending order, then we need to reverse the array.
+            // If we want it in descending order, then we need to reverse the array.
             sorted = sorted.reverse();
         }
 
