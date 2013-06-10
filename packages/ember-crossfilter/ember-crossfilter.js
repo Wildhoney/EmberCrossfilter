@@ -485,9 +485,9 @@ window.EmberCrossfilter = Ember.Mixin.create({
             currentIndex    = 0;
 
         // Loop through all of the unique properties from the controller's models.
-        for (var propertyIndex in properties) {
+        for (var uniquePropertyIndex in properties) {
 
-            if (!properties.hasOwnProperty(propertyIndex)) {
+            if (!properties.hasOwnProperty(uniquePropertyIndex)) {
                 // Don't continue if it's not in the immediate prototype.
                 continue;
             }
@@ -498,7 +498,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
             totalBitwise ^= propertyBitwise;
 
             // Finally we can define the property's bitwise, and place it into a convenient object.
-            propertiesMap[properties[propertyIndex]] = propertyBitwise;
+            propertiesMap[properties[uniquePropertyIndex]] = propertyBitwise;
         }
 
         // Set the items on the relevant `filterMap`.
