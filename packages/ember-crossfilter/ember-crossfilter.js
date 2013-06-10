@@ -38,30 +38,6 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * @method reinitialiseCrossfilter
-     * Allows you to reinitialise the Crossfilter creation, such as when new items are
-     * added to the content that you wish to include.
-     * @return {Boolean} whether or not it was successful.
-     */
-//    reinitialiseCrossfilter: function() {
-//
-//        this._crossfilter = null;
-//        this.clearAllFilters();
-//
-//        for (var key in this) {
-//
-//            if (!key.match(/^_dimension.+/)) {
-//                continue;
-//            }
-//
-//            delete this[key];
-//        }
-//
-//        return this._createCrossfilter();
-//
-//    },
-
-    /**
      * Determines if a particular filter is active or not.
      * @param key {String}
      * @param value {String|Number}
@@ -270,7 +246,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
     /**
      * @method top
      * Helper method to find the highest value.
-     * @param key {String}
+     * @param property {String}
      * @param count {Number}
      * @return {Number|String}
      */
@@ -281,7 +257,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
     /**
      * @method bottom
      * Helper method to find the lowest value.
-     * @param key {String}
+     * @param property {String}
      * @param count {Number}
      * @return {Number|String}
      */
@@ -439,14 +415,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
             if (this[name]) {
                 // We've already defined this dimension (probably a filterRange).
-//                return;
-                delete this[name];
+                return;
             }
 
             // Define the property using the JS 1.8.5 way.
             Object.defineProperty(this, name, {
                 enumerable: false,
-                configurable: true,
+                configurable: false,
                 writable: false,
                 value: this._crossfilter.dimension(function(d) {
                     return d[property];
@@ -681,6 +656,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @private
      */
     _setFilterFunction: function(map, dimension) {
+
         if (map.value === false) {
             // Remove the custom filter.
             dimension.filterAll();

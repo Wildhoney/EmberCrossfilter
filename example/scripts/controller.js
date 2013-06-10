@@ -26,8 +26,8 @@ App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, {
             var model = this.model.create(cat);
             models.push(model);
         }, this);
-        this.set('content', models);
 
+        this.set('content', models);
         this._super();
 
     },
