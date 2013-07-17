@@ -138,7 +138,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Find the relevant &#x60;filterMap&#x60;.
         var map = this.filterMap[key];
 
-        // If we&#x27;re dealing with a &#x60;filterInArray&#x60;, then we need to perform a
+        // If we&#x27;re dealing with a &#x60;filterAnd&#x60;/&#x60;filterOr&#x60;, then we need to perform a
         // small calculation on it.
         if (this.isBooleanFilter(map)) {
 
@@ -197,7 +197,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         } else {
 
-            // Otherwise we&#x27;re dealing with a &#x60;filterInArray&#x60;.
+            // Otherwise we&#x27;re dealing with a &#x60;filterAnd&#x60;/&#x60;filterOr&#x60;.
             // Firstly we need to push the value into the list of &#x60;active&#x60; elements,
             // and ensure it&#x27;s unique.
 
@@ -241,7 +241,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         if (!this.isBooleanFilter(map)) {
 
-            // If we&#x27;re not dealing with a &#x60;filterInArray&#x60; then we can
+            // If we&#x27;re not dealing with a &#x60;filterAnd&#x60;/&#x60;filterOr&#x60; then we can
             // set its value to false, and it&#x27;s &#x60;active&#x60; as well.
             map.value = false;
             Ember.set(map, &#x27;active&#x27;, false);
@@ -306,7 +306,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
             map.value = null;
 
             if (this.isBooleanFilter(map)) {
-                // If we&#x27;re dealing with a &#x60;filterInArray&#x60;, then its default is 0.
+                // If we&#x27;re dealing with a &#x60;filterAnd&#x60;/&#x60;filterOr&#x60;, then its default is 0.
                 map.value = 0;
             }
 
@@ -458,8 +458,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         switch (map.method) {
 
-            // Use the jQuery inArray method if we&#x27;ve defined a filterInArray.
-            case (&#x27;filterOr&#x27;): case (&#x27;filterAnd&#x27;): this._setFilterInArray(map, dimension); break;
+            // Use the jQuery inArray method if we&#x27;ve defined a &#x60;filterAnd&#x60;/&#x60;filterOr&#x60;.
+            case (&#x27;filterOr&#x27;): case (&#x27;filterAnd&#x27;): this._setFilterBoolean(map, dimension); break;
 
             // Invoked when we&#x27;re handling a filterRange dimension.
             case (&#x27;filterRangeMin&#x27;)  : this._setFilterRangeMin(map, dimension); break;
@@ -563,8 +563,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
             if (this.isBooleanFilter(map)) {
 
                 Ember.set(map, &#x27;active&#x27;, []);
-                // We need to apply some special behaviour if it&#x27;s a &#x60;filterInArray&#x60;.
-                this._createFilterInArray(map);
+                // We need to apply some special behaviour if it&#x27;s a &#x60;filterAnd&#x60;/&#x60;filterOr&#x60;.
+                this._createFilterBoolean(map);
 
             }
 
@@ -577,13 +577,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * @method _createFilterInArray
+     * @method _createFilterBoolean
      * @param map {Object}
-     * Responsible for setting up the &#x60;filterInArray&#x60; methods by attaching a bitwise operator
+     * Responsible for setting up the &#x60;filterAnd&#x60;/&#x60;filterOr&#x60; methods by attaching a bitwise operator
      * to each model.
      * @private
      */
-    _createFilterInArray: function(map) {
+    _createFilterBoolean: function(map) {
         
         var start = new Date().getTime();
 
@@ -697,7 +697,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * @method _setFilterInArray
+     * @method _setFilterBoolean
      * @param map
      * @param dimension
      * Implement a missing Crossfilter method for checking the inArray, although
@@ -706,7 +706,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {void}
      * @private
      */
-    _setFilterInArray: function(map, dimension) {
+    _setFilterBoolean: function(map, dimension) {
 
         if (this.getBooleanType(map) === &#x27;and&#x27;) {
 

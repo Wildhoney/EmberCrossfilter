@@ -382,11 +382,11 @@
             "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
             "line": 489,
             "itemtype": "method",
-            "name": "_createFilterInArray",
+            "name": "_createFilterBoolean",
             "params": [
                 {
                     "name": "map",
-                    "description": "\nResponsible for setting up the `filterInArray` methods by attaching a bitwise operator\nto each model.",
+                    "description": "\nResponsible for setting up the `filterAnd`/`filterOr` methods by attaching a bitwise operator\nto each model.",
                     "type": "Object"
                 }
             ],
@@ -430,7 +430,7 @@
             "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
             "line": 609,
             "itemtype": "method",
-            "name": "_setFilterInArray",
+            "name": "_setFilterBoolean",
             "params": [
                 {
                     "name": "map",

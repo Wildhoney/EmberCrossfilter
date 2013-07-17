@@ -48,7 +48,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Find the relevant `filterMap`.
         var map = this.filterMap[key];
 
-        // If we're dealing with a `filterInArray`, then we need to perform a
+        // If we're dealing with a `filterAnd`/`filterOr`, then we need to perform a
         // small calculation on it.
         if (this.isBooleanFilter(map)) {
 
@@ -107,7 +107,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         } else {
 
-            // Otherwise we're dealing with a `filterInArray`.
+            // Otherwise we're dealing with a `filterAnd`/`filterOr`.
             // Firstly we need to push the value into the list of `active` elements,
             // and ensure it's unique.
 
@@ -151,7 +151,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         if (!this.isBooleanFilter(map)) {
 
-            // If we're not dealing with a `filterInArray` then we can
+            // If we're not dealing with a `filterAnd`/`filterOr` then we can
             // set its value to false, and it's `active` as well.
             map.value = false;
             Ember.set(map, 'active', false);
@@ -216,7 +216,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
             map.value = null;
 
             if (this.isBooleanFilter(map)) {
-                // If we're dealing with a `filterInArray`, then its default is 0.
+                // If we're dealing with a `filterAnd`/`filterOr`, then its default is 0.
                 map.value = 0;
             }
 
@@ -368,8 +368,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         switch (map.method) {
 
-            // Use the jQuery inArray method if we've defined a filterInArray.
-            case ('filterOr'): case ('filterAnd'): this._setFilterInArray(map, dimension); break;
+            // Use the jQuery inArray method if we've defined a `filterAnd`/`filterOr`.
+            case ('filterOr'): case ('filterAnd'): this._setFilterBoolean(map, dimension); break;
 
             // Invoked when we're handling a filterRange dimension.
             case ('filterRangeMin')  : this._setFilterRangeMin(map, dimension); break;
@@ -473,8 +473,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
             if (this.isBooleanFilter(map)) {
 
                 Ember.set(map, 'active', []);
-                // We need to apply some special behaviour if it's a `filterInArray`.
-                this._createFilterInArray(map);
+                // We need to apply some special behaviour if it's a `filterAnd`/`filterOr`.
+                this._createFilterBoolean(map);
 
             }
 
@@ -487,13 +487,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * @method _createFilterInArray
+     * @method _createFilterBoolean
      * @param map {Object}
-     * Responsible for setting up the `filterInArray` methods by attaching a bitwise operator
+     * Responsible for setting up the `filterAnd`/`filterOr` methods by attaching a bitwise operator
      * to each model.
      * @private
      */
-    _createFilterInArray: function(map) {
+    _createFilterBoolean: function(map) {
         
         var start = new Date().getTime();
 
@@ -607,7 +607,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * @method _setFilterInArray
+     * @method _setFilterBoolean
      * @param map
      * @param dimension
      * Implement a missing Crossfilter method for checking the inArray, although
@@ -616,7 +616,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {void}
      * @private
      */
-    _setFilterInArray: function(map, dimension) {
+    _setFilterBoolean: function(map, dimension) {
 
         if (this.getBooleanType(map) === 'and') {
 
