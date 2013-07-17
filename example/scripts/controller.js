@@ -7,9 +7,6 @@
  */
 App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, {
 
-    name: 'Adam',
-
-
     /**
      * @property model
      * @type String
