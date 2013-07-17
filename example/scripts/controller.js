@@ -5,7 +5,7 @@
  * @type Ember.ArrayController
  * @extends Ember.ArrayController
  */
-App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, Ember.Memento, {
+App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, {
 
     name: 'Adam',
 
