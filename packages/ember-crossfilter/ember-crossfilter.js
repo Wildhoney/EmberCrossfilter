@@ -440,10 +440,10 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
             // Define the property using the JS 1.8.5 way.
             Object.defineProperty(this, name, {
-                enumerable: false,
-                configurable: false,
-                writable: false,
-                value: this._crossfilter.dimension(function(d) {
+                enumerable      : false,
+                configurable    : false,
+                writable        : false,
+                value           : this._crossfilter.dimension(function(d) {
                     return d[property];
                 })
             });
@@ -679,16 +679,18 @@ window.EmberCrossfilter = Ember.Mixin.create({
      */
     _setFilterFunction: function(map, dimension) {
 
+        var controller = this, methodName;
+
         if (map.value === false) {
             // Remove the custom filter.
             dimension.filterAll();
             return;
         }
 
-        var methodName = '_apply%@'.fmt(map.name.capitalize());
+        methodName = '_apply%@'.fmt(map.name.capitalize());
         Ember.assert('Crossfilter `filterFunction` expects a callback named `%@`.'.fmt(methodName), !!Ember.canInvoke(this, methodName));
 
-        var controller = this;
+        controller = this;
         dimension.filterFunction(function(d) {
             return controller[methodName].apply(controller, [d]);
         });
@@ -705,13 +707,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
      */
     _setFilterRangeMin: function(map, dimension) {
 
-        var minName = map.name.replace('min', 'max');
+        var minName = map.name.replace('min', 'max'), maxValue;
 
         // Assert that we can find the opposite dimension.
         Ember.assert('You must specify define the `max` dimension for %@'.fmt(map.name), !!this.filterMap[minName]);
 
         // Apply the filter using the existing maximum value, if it exists.
-        var maxValue = this.filterMap[minName].value;
+        maxValue = this.filterMap[minName].value;
         dimension.filterRange([map.value || -Infinity, maxValue || Infinity]);
 
     },
@@ -726,13 +728,13 @@ window.EmberCrossfilter = Ember.Mixin.create({
      */
     _setFilterRangeMax: function(map, dimension) {
 
-        var maxName = map.name.replace('max', 'min');
+        var maxName = map.name.replace('max', 'min'), minValue;
 
         // Assert that we can find the opposite dimension.
         Ember.assert('You must specify define the `min` dimension for %@'.fmt(map.name), !!this.filterMap[maxName]);
 
         // Apply the filter using the existing minimum value, if it exists.
-        var minValue = this.filterMap[maxName].value;
+        minValue = this.filterMap[maxName].value;
         dimension.filterRange([minValue || -Infinity, map.value || Infinity]);
 
     }

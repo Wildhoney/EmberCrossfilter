@@ -6,7 +6,7 @@ Both Ember DS and native JavaScript filtering methods are slow in comparison to 
 Out of the box, EmberCrossfilter provides:
 
 * Create simple filters, such as ranges, custom callbacks, exact matches;
-* Create more complicated boolean filters, such as OR/AND (`filterInArray`);
+* Create more complicated boolean filters, such as OR/AND (`filterAnd`/`filterOr`);
 * Ability to determine which filters are active;
 * Find the highest/lowest values quickly (`top`/`bottom`);
 * Naturally sort an array using the `sort` object, and modify using the `sortContent` method;
@@ -57,16 +57,16 @@ Updates
 More Complicated Stuff: Crossfilter's Missing Child
 -------------
 
-When using Crossfilter, it became apparent that comparing two arrays was naturally slow in Crossfilter, such as when you had `[1, 2, 3]` and you wanted only models with those values set. `EmberCrossfilter` rectifies that issue by offering a bitwise solution (`filterInArray`) which does all the hard-work for you. It can be configured to use OR/AND.
+When using Crossfilter, it became apparent that comparing two arrays was naturally slow in Crossfilter, such as when you had `[1, 2, 3]` and you wanted only models with those values set. `EmberCrossfilter` rectifies that issue by offering a bitwise solution (`filterAnd`/`filterOr`) which does all the hard-work for you. It can be configured to use OR/AND.
 
-**AND (`boolean: 'and'`)**
+**AND (`filterAnd`)**
 
 If you've set `['Italy', 'Russia']` then a model must have BOTH of these values to be considered valid.
 
 * Valid: `['Italy', 'Russia', 'Spain']`
 * Invalid: `['Italy', 'Brazil', 'India']`
 
-**OR (`boolean: 'or'`)**
+**OR (`filterOr`)**
 
 In this case if you've set `['Italy', 'Russia']`, then a model can have either or both of these to be considered valid.
 
