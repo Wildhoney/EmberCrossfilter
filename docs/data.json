@@ -472,7 +472,7 @@
         },
         {
             "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
-            "line": 698,
+            "line": 700,
             "itemtype": "method",
             "name": "_setFilterRangeMin",
             "params": [
@@ -492,7 +492,7 @@
         },
         {
             "file": "packages\\ember-crossfilter\\ember-crossfilter.js",
-            "line": 719,
+            "line": 721,
             "itemtype": "method",
             "name": "_setFilterRangeMax",
             "params": [
