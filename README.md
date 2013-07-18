@@ -54,7 +54,7 @@ Updates
 
 `EmberCrossfilter` doesn't provide any mechanism for determining if the `content` has been updated. If you'd like to know when an update has occurred, then you can observer the `content.length` property on your controller.
 
-More Complicated Stuff: Crossfilter's Missing Child
+Extras: Crossfilter's Missing Child
 -------------
 
 When using Crossfilter, it became apparent that comparing two arrays was naturally slow in Crossfilter, such as when you had `[1, 2, 3]` and you wanted only models with those values set. `EmberCrossfilter` rectifies that issue by offering a bitwise solution (`filterAnd`/`filterOr`) which does all the hard-work for you. It can be configured to use OR/AND.
