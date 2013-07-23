@@ -44,7 +44,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-yuidoc');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
 
-    // Default task(s).
+    // Testing.
+    grunt.registerTask('test', ['jshint', 'jasmine', 'yuidoc', 'uglify']);
+
+    // Build.
     grunt.registerTask('default', ['jshint', 'jasmine', 'yuidoc', 'uglify']);
 
 };

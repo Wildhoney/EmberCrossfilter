@@ -20,6 +20,10 @@ App.CatsView = Ember.View.extend({
          */
         tagName: 'a',
 
+        /**
+         * @property classNameBindings
+         * @type {Array}
+         */
         classNameBindings: ['isFilterActive:active:inactive'],
 
         /**
