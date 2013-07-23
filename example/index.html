@@ -8,12 +8,11 @@
     <script type="text/javascript" src="../lib/ember-1.0.0-rc.6.js"></script>
     <script type="text/javascript" src="../lib/crossfilter-1.2.0.js"></script>
 
-    <script type="text/javascript" src="memento.js"></script>
     <script type="text/javascript" src="scripts/default.js"></script>
     <script type="text/javascript" src="../packages/ember-crossfilter/ember-crossfilter.js"></script>
     <script type="text/javascript" src="scripts/model.js"></script>
     <script type="text/javascript" src="scripts/controller.js"></script>
-    <!--<script type="text/javascript" src="scripts/view.js"></script>-->
+    <script type="text/javascript" src="scripts/view.js"></script>
 
     <style type="text/css">
 
@@ -35,7 +34,49 @@
 
     <script type="text/x-handlebars" data-template-name="cats">
 
-    Yeh.
+        <h1>Apply Filters &ndash; <a {{action "clearAllFilters"}}>Clear All</a></h1>
+
+        <ul>
+            <li>Sort by Name: &ndash;
+                <a {{action "sortContent" "name" true}}>Sort by Name (Ascending)</a>
+                &ndash;
+                <a {{action "sortContent" "name" false}}>Sort by Name (Descending)</a>
+            </li>
+            <li>Sort by Cuteness: &ndash;
+                <a {{action "sortContent" "cuteness" true}}>Sort by Cuteness (Ascending)</a>
+                &ndash;
+                <a {{action "sortContent" "cuteness" false}}>Sort by Cuteness (Descending)</a>
+            </li>
+        </ul>
+
+        <ul>
+            <li>{{#view view.Filter key="colour" value="black"}}Cats who are coloured black{{/view}} <strong>or</strong> {{#view view.Filter key="colour" value="beige"}}coloured beige{{/view}}</li>
+            <li>{{#view view.Filter key="country" value="Russia"}}Cats who live in Russia{{/view}} <strong>and</strong> {{#view view.Filter key="country" value="Britain"}}and Britain{{/view}}</li>
+            <li>{{#view view.Filter key="minAge" value=5}}Cats who are older than 5{{/view}}</li>
+            <li>{{#view view.Filter key="maxAge" value=8}}Cats who are younger than 8{{/view}}</li>
+            <li>{{#view view.Filter key="name" value="Boris"}}Cats who are called Boris{{/view}}</li>
+            <li>{{#view view.Filter key="partialName" value="R"}}Cats who have "R" in their name{{/view}}</li>
+            <li>{{#view view.Filter key="isCute" value=true}}Cats who are considered to be cute{{/view}}</li>
+        </ul>
+
+        <h1>We have {{content.length}} cats</h1>
+
+        <ul>
+            {{#each controller}}
+
+            <li>Name: {{name}}</li>
+            <li class="details">
+                <ul>
+                    <li>Age: {{age}}</li>
+                    <li>Colours: {{colours}}</li>
+                    <li>Place of Origin: {{country}}</li>
+                    <li>Cuteness Level: {{cuteness}}</li>
+                </ul>
+            </li>
+
+            {{/each}}
+        </ul>
+
     </script>
 
 </body>
