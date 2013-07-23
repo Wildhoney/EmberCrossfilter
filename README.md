@@ -1,6 +1,6 @@
 Ember Crossfilter 0.1.1
 ================
-<img src="https://travis-ci.org/Wildhoney/EmberDroplet.png?branch=master" />
+<img src="https://travis-ci.org/Wildhoney/EmberCrossfilter.png?branch=master" />
 
 Both Ember DS and native JavaScript filtering methods are slow in comparison to Crossfilter. However, Crossfilter is not the easiest to get started with, and people starting out with Crossfilter find themselves in a pickle. That's why I've created a facade for working with Crossfilter with Ember. If you wish to go with your own implementation, then `EmberCrossfilter` also serves as a nice reference, and an example of a good implementation.
 
