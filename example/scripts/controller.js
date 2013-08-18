@@ -9,10 +9,17 @@ App.CatsController = Ember.ArrayController.extend(EmberCrossfilter, {
 
     /**
      * @property model
-     * @type String
-     * @default "App.CatModel"
+     * @type {Object}
+     * @default App.CatModel
      */
     model: App.CatModel,
+
+    /**
+     * @property primaryKey
+     * @type {String}
+     * @default "id"
+     */
+    primaryKey: 'id',
 
     /**
      * @method init

@@ -414,7 +414,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
     _applyContentChanges: function() {
 
         // Gather the default dimension, and apply the default dimension on the primary key.
-        var defaultDimension    = Ember.get(this, '_dimensionId'),
+        var defaultDimension    = Ember.get(this, '_dimensionDefault'),
             content             = defaultDimension.filterAll().top(Infinity);
 
         if (Ember.get(this, 'sort.sortProperty')) {
@@ -463,7 +463,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         };
 
         // Define our default dimension, which is the primary key of the collection (id).
-        defineProperty.apply(this, ['_dimensionId', 'id']);
+        defineProperty.apply(this, ['_dimensionDefault', this.get('primaryKey') || 'id']);
 
         for (var map in this.filterMap) {
 
