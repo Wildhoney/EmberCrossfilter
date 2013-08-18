@@ -2,9 +2,6 @@
   "name": "EmberCrossfilter",
   "version": "0.1.2",
   "author": "Adam Timberlake",
-  "devDependencies": {
-    "grunt": "~0.4.1"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com:Wildhoney/EmberCrossfilter.git"
