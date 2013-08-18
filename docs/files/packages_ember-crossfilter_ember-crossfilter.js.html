@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>packages\ember-crossfilter\ember-crossfilter.js - EmberCrossfilter</title>
+    <title>packages/ember-crossfilter/ember-crossfilter.js - EmberCrossfilter</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -84,7 +84,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: packages\ember-crossfilter\ember-crossfilter.js</h1>
+                        <h1 class="file-heading">File: packages/ember-crossfilter/ember-crossfilter.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
@@ -125,6 +125,18 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Create the Crossfilter.
         this._createCrossfilter();
 
+    },
+
+    /**
+     * @method addRecord
+     * @param record {Object}
+     * Adds a record to the Crossfilter.
+     * @returns {Boolean}
+     */
+    addRecord: function(record) {
+        this._crossfilter.add([record]);
+        this._applyContentChanges();
+        return true;
     },
 
     /**
@@ -492,7 +504,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
     _applyContentChanges: function() {
 
         // Gather the default dimension, and apply the default dimension on the primary key.
-        var defaultDimension    = Ember.get(this, &#x27;_dimensionId&#x27;),
+        var defaultDimension    = Ember.get(this, &#x27;_dimensionDefault&#x27;),
             content             = defaultDimension.filterAll().top(Infinity);
 
         if (Ember.get(this, &#x27;sort.sortProperty&#x27;)) {
@@ -541,7 +553,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         };
 
         // Define our default dimension, which is the primary key of the collection (id).
-        defineProperty.apply(this, [&#x27;_dimensionId&#x27;, &#x27;id&#x27;]);
+        defineProperty.apply(this, [&#x27;_dimensionDefault&#x27;, this.get(&#x27;primaryKey&#x27;) || &#x27;id&#x27;]);
 
         for (var map in this.filterMap) {
 
