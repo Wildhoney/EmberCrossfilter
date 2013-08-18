@@ -96,7 +96,7 @@ describe('Ember Crossfilter', function() {
     describe('Crossfilter', function() {
 
         it('Can define the necessary dimensions.', function() {
-            expect(Ember.get(controller, '_dimensionId')).toBeDefined();
+            expect(Ember.get(controller, '_dimensionDefault')).toBeDefined();
             expect(Ember.get(controller, '_dimensionColour')).toBeDefined();
             expect(Ember.get(controller, '_dimensionAge')).toBeDefined();
             expect(Ember.get(controller, '_dimensionName')).toBeDefined();

@@ -33,7 +33,7 @@ module.exports = function(grunt) {
                 src: 'packages/ember-crossfilter/ember-crossfilter.js',
                 options: {
                     specs: 'tests/spec.js',
-                    helpers: ['lib/jquery-1.10.1.js', 'lib/handlebars-1.0.rc.4.js', 'lib/ember-1.0.0-rc.7.js', 'lib/crossfilter-1.2.0.js']
+                    helpers: ['lib/jquery-1.10.1.js', 'lib/handlebars-1.0.0.js', 'lib/ember-1.0.0-rc.7.js', 'lib/crossfilter-1.2.0.js']
                 }
             }
         }
