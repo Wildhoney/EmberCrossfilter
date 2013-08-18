@@ -38,6 +38,18 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
+     * @method addRecord
+     * @param record {Object}
+     * Adds a record to the Crossfilter.
+     * @returns {Boolean}
+     */
+    addRecord: function(record) {
+        this._crossfilter.add([record]);
+        this._applyContentChanges();
+        return true;
+    },
+
+    /**
      * Determines if a particular filter is active or not.
      * @param key {String}
      * @param value {String|Number}
