@@ -1,4 +1,4 @@
-Ember Crossfilter 0.1.1
+Ember Crossfilter 0.1.2
 ================
 <img src="https://travis-ci.org/Wildhoney/EmberCrossfilter.png?branch=master" />
 
@@ -22,6 +22,7 @@ It exposes the following public methods:
 
 * `isActiveFilter(key, value)` &ndash; whether a filter is currently active, with an optional `value` parameter for specificity.
 * `addFilter(key, value)` &ndash; add a new filter to filter against;
+* `addRecord(record)` &ndash; adds an individual record to the collection;
 * `removeFilter(key, value)` &ndash; remove a filter that's already been applied using `addFilter`;
 * `clearAllFilters` &ndash; clears all of the applied filters;
 * `sortContent(property, isAscending)` &ndash; filters the content based on a property from the model;

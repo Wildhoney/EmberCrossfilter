@@ -1,6 +1,6 @@
 {
   "name": "EmberCrossfilter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Adam Timberlake",
   "devDependencies": {
     "grunt": "~0.4.1"
