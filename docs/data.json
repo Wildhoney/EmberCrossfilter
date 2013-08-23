@@ -97,6 +97,25 @@
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
             "line": 52,
+            "itemtype": "method",
+            "name": "addRecords",
+            "params": [
+                {
+                    "name": "records",
+                    "description": "\nWrapper method for adding many records to the Crossfilter.",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "EmberCrossfilter",
+            "module": "EmberCrossfilter"
+        },
+        {
+            "file": "packages/ember-crossfilter/ember-crossfilter.js",
+            "line": 82,
             "description": "Determines if a particular filter is active or not.",
             "params": [
                 {
@@ -119,7 +138,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 83,
+            "line": 113,
             "itemtype": "method",
             "name": "isBooleanFilter",
             "params": [
@@ -138,7 +157,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 92,
+            "line": 122,
             "itemtype": "method",
             "name": "getBooleanType",
             "params": [
@@ -157,7 +176,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 101,
+            "line": 131,
             "itemtype": "method",
             "name": "addFilter",
             "params": [
@@ -179,7 +198,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 152,
+            "line": 182,
             "itemtype": "method",
             "name": "removeFilter",
             "params": [
@@ -201,7 +220,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 203,
+            "line": 233,
             "itemtype": "method",
             "name": "clearAllFilters\nClears all of the filters that are currently active.",
             "return": {
@@ -213,7 +232,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 247,
+            "line": 277,
             "itemtype": "method",
             "name": "sortContent\nSorts the content based on the property, and whether it should be ascending/descending.",
             "params": [
@@ -237,7 +256,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 278,
+            "line": 308,
             "itemtype": "method",
             "name": "top\nHelper method to find the highest value.",
             "params": [
@@ -261,7 +280,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 289,
+            "line": 319,
             "itemtype": "method",
             "name": "bottom\nHelper method to find the lowest value.",
             "params": [
@@ -285,7 +304,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 300,
+            "line": 330,
             "itemtype": "method",
             "name": "_topBottom",
             "params": [
@@ -316,7 +335,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 322,
+            "line": 352,
             "itemtype": "method",
             "name": "_createCrossfilter\nCreates the Crossfilter from the content.",
             "return": {
@@ -330,7 +349,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 369,
+            "line": 399,
             "description": "Update the content in the controller against the applied filters.",
             "params": [
                 {
@@ -349,9 +368,9 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 408,
+            "line": 438,
             "itemtype": "method",
-            "name": "_applyContentChanges\nUpdates the content array based on the applied filters.",
+            "name": "_applyContentChanges\nUpdates the content array based on the applied filters. Any changes to the Crossfilter should\nmean invoke this function!",
             "return": {
                 "description": "",
                 "type": "Void"
@@ -363,7 +382,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 430,
+            "line": 461,
             "itemtype": "method",
             "name": "_createDimensions\nCreate the defined dimensions from the controller.",
             "return": {
@@ -377,7 +396,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 438,
+            "line": 469,
             "itemtype": "method",
             "name": "defineProperty\nWrapper for the Object.defineProperty, as all of our defined dimensions will\nbe similar in their construction.",
             "params": [
@@ -399,7 +418,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 501,
+            "line": 532,
             "itemtype": "method",
             "name": "_createFilterBoolean",
             "params": [
@@ -416,7 +435,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 596,
+            "line": 627,
             "itemtype": "method",
             "name": "_sortedContent",
             "params": [
@@ -447,7 +466,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 621,
+            "line": 652,
             "itemtype": "method",
             "name": "_setFilterBoolean",
             "params": [
@@ -471,7 +490,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 683,
+            "line": 714,
             "itemtype": "method",
             "name": "_setFilterFunction",
             "params": [
@@ -491,7 +510,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 712,
+            "line": 743,
             "itemtype": "method",
             "name": "_setFilterRangeMin",
             "params": [
@@ -511,7 +530,7 @@
         },
         {
             "file": "packages/ember-crossfilter/ember-crossfilter.js",
-            "line": 733,
+            "line": 764,
             "itemtype": "method",
             "name": "_setFilterRangeMax",
             "params": [
@@ -537,11 +556,11 @@
         },
         {
             "message": "Missing item type\nDetermines if a particular filter is active or not.",
-            "line": " packages/ember-crossfilter/ember-crossfilter.js:52"
+            "line": " packages/ember-crossfilter/ember-crossfilter.js:82"
         },
         {
             "message": "Missing item type\nUpdate the content in the controller against the applied filters.",
-            "line": " packages/ember-crossfilter/ember-crossfilter.js:369"
+            "line": " packages/ember-crossfilter/ember-crossfilter.js:399"
         }
     ]
 }

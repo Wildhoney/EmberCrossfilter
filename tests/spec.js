@@ -262,6 +262,33 @@ describe('Ember Crossfilter', function() {
 
     });
 
+    describe('Adding', function() {
+
+        it('Can add one record to an active Crossfilter', function() {
+            controller.addRecord({ name: 'Adam' });
+            expect(Ember.get(controller, 'content.length'), 1);
+        });
+
+        it('Can add one record to an active Crossfilter', function() {
+            controller.addRecord({ name: 'Adam' });
+            expect(Ember.get(controller, 'content.length'), 1);
+        });
+
+        it('Can add many records using `addRecord` to an active Crossfilter', function() {
+            controller.addRecord({ name: 'Adam' }, { name: 'Baki' }, { name: 'Gosia' }, { name: 'Noemi' });
+            expect(Ember.get(controller, 'content.length'), 4);
+        });
+
+        it('Can add many records using `addRecords` to an active Crossfilter', function() {
+            controller.addRecord({ name: 'Adam' });
+            controller.addRecord({ name: 'Baki' });
+            controller.addRecord({ name: 'Gosia' });
+            controller.addRecord({ name: 'Noemi' });
+            expect(Ember.get(controller, 'content.length'), 4);
+        });
+
+    });
+
     describe('Sorting', function() {
 
         it('Can sort content ascending by name.', function() {

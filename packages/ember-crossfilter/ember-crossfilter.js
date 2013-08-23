@@ -25,7 +25,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * Invoked when the controller is instantiated.
      * @constructor
      */
-    init: function() {
+    init: function init() {
 
         this._super();
 
@@ -43,10 +43,40 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * Adds a record to the Crossfilter.
      * @returns {Boolean}
      */
-    addRecord: function(record) {
+    addRecord: function addRecord(record) {
         this._crossfilter.add([record]);
         this._applyContentChanges();
         return true;
+    },
+
+    /**
+     * @method addRecords
+     * @param records {Array}
+     * Wrapper method for adding many records to the Crossfilter.
+     * @return {Number}
+     */
+    addRecords: function addRecords(records) {
+
+        var added = 0;
+
+        if (!Arary.isArray(records)) {
+            console.error('You must pass an array of records: use `addRecord` instead!');
+            return;
+        }
+
+
+        // Iterate over all of the records and add each one individually.
+        for (var index = 0, count = records.length; index <= count; index++) {
+
+            // Add each record we come across!
+            var record = records[index];
+            this.addRecord(record);
+            added++;
+
+        }
+
+        return added;
+
     },
 
     /**
@@ -55,7 +85,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param value {String|Number}
      * @return {Boolean}
      */
-    isActiveFilter: function(key, value) {
+    isActiveFilter: function isActiveFilter(key, value) {
 
         // Find the relevant `filterMap`.
         var map = this.filterMap[key];
@@ -85,7 +115,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param map {Object}
      * @return {Boolean}
      */
-    isBooleanFilter: function(map) {
+    isBooleanFilter: function isBooleanFilter(map) {
         return (map.method === 'filterOr' || map.method === 'filterAnd');
     },
 
@@ -94,7 +124,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param map {Object}
      * @return {String}
      */
-    getBooleanType: function(map) {
+    getBooleanType: function getBooleanType(map) {
         return (map.method === 'filterOr') ? 'or' : 'and';
     },
 
@@ -105,7 +135,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * Applies a filter to one of our pre-defined dimensions.
      * @return {void}
      */
-    addFilter: function(key, value) {
+    addFilter: function addFilter(key, value) {
 
         // Find the map we're referencing by its name, and extract its method.
         var map = this.filterMap[key];
@@ -156,7 +186,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * Clear the any applied filters to the dimension.
      * @return {void}
      */
-    removeFilter: function(key, value) {
+    removeFilter: function removeFilter(key, value) {
 
         // Find the `filterMap` that relates to this key.
         var map = this.filterMap[key];
@@ -205,7 +235,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * Clears all of the filters that are currently active.
      * @return {void}
      */
-    clearAllFilters: function() {
+    clearAllFilters: function clearAllFilters() {
 
         var start = new Date().getTime();
 
@@ -251,7 +281,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param isAscending {Boolean}
      * @return {void}
      */
-    sortContent: function(property, isAscending) {
+    sortContent: function sortContent(property, isAscending) {
 
         // Sort the content and then place it into the content array.
         var content = this._sortedContent(Ember.get(this, 'content'), property, isAscending),
@@ -282,7 +312,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param count {Number}
      * @return {Number|String}
      */
-    top: function(property, count) {
+    top: function top(property, count) {
         return this._topBottom(property, count, 'top');
     },
 
@@ -293,7 +323,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @param count {Number}
      * @return {Number|String}
      */
-    bottom: function(property, count) {
+    bottom: function bottom(property, count) {
         return this._topBottom(property, count, 'bottom');
     },
 
@@ -305,7 +335,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {Number|String}
      * @private
      */
-    _topBottom: function(key, count, crossfilterMethod) {
+    _topBottom: function _topBottom(key, count, crossfilterMethod) {
 
         // Assert that we have a `filterMap` by this key.
         Ember.assert('Dimension with key "%@" is not defined.'.fmt(key), !!this.filterMap[key]);
@@ -325,7 +355,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {Boolean}
      * @private
      */
-    _createCrossfilter: function() {
+    _createCrossfilter: function _createCrossfilter() {
 
         // Assert that we have the `filterMap` property for configuring EmberCrossfilter.
         Ember.assert('Controller implements EmberCrossfilter but `filterMap` has not been specified.', !!this.filterMap);
@@ -372,7 +402,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {void}
      * @private
      */
-    _updateContent: function(map) {
+    _updateContent: function _updateContent(map) {
 
         // Find the defined dimension name, and begin the timing.
         var start       = new Date().getTime(),
@@ -407,11 +437,12 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
     /**
      * @method _applyContentChanges
-     * Updates the content array based on the applied filters.
+     * Updates the content array based on the applied filters. Any changes to the Crossfilter should
+     * mean invoke this function!
      * @return {void}
      * @private
      */
-    _applyContentChanges: function() {
+    _applyContentChanges: function _applyContentChanges() {
 
         // Gather the default dimension, and apply the default dimension on the primary key.
         var defaultDimension    = Ember.get(this, '_dimensionDefault'),
@@ -433,7 +464,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {void}
      * @private
      */
-    _createDimensions: function() {
+    _createDimensions: function _createDimensions() {
 
         /**
          * @method defineProperty
@@ -505,7 +536,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * to each model.
      * @private
      */
-    _createFilterBoolean: function(map) {
+    _createFilterBoolean: function _createFilterBoolean(map) {
         
         var start = new Date().getTime();
 
@@ -601,7 +632,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {String}
      * @private
      */
-    _sortedContent: function(content, property, isAscending) {
+    _sortedContent: function _sortedContent(content, property, isAscending) {
 
         // Initialise the sorting using Crossfilter's `quicksort`.
         var sortAlgorithm   = crossfilter.quicksort.by(function(d) { return d[property]; });
@@ -628,7 +659,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * @return {void}
      * @private
      */
-    _setFilterBoolean: function(map, dimension) {
+    _setFilterBoolean: function _setFilterBoolean(map, dimension) {
 
         if (this.getBooleanType(map) === 'and') {
 
@@ -689,7 +720,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * convention over configuration.
      * @private
      */
-    _setFilterFunction: function(map, dimension) {
+    _setFilterFunction: function _setFilterFunction(map, dimension) {
 
         var controller = this, methodName;
 
@@ -717,7 +748,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * the array for the filterRange.
      * @private
      */
-    _setFilterRangeMin: function(map, dimension) {
+    _setFilterRangeMin: function _setFilterRangeMin(map, dimension) {
 
         var minName = map.name.replace('min', 'max'), maxValue;
 
@@ -738,7 +769,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
      * the array for the filterRange.
      * @private
      */
-    _setFilterRangeMax: function(map, dimension) {
+    _setFilterRangeMax: function _setFilterRangeMax(map, dimension) {
 
         var maxName = map.name.replace('max', 'min'), minValue;
 
