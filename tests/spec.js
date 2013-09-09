@@ -266,25 +266,29 @@ describe('Ember Crossfilter', function() {
 
         it('Can add one record to an active Crossfilter', function() {
             controller.addRecord({ name: 'Adam' });
-            expect(Ember.get(controller, 'content.length'), 1);
-        });
-
-        it('Can add one record to an active Crossfilter', function() {
-            controller.addRecord({ name: 'Adam' });
-            expect(Ember.get(controller, 'content.length'), 1);
-        });
-
-        it('Can add many records using `addRecord` to an active Crossfilter', function() {
-            controller.addRecord({ name: 'Adam' }, { name: 'Baki' }, { name: 'Gosia' }, { name: 'Noemi' });
-            expect(Ember.get(controller, 'content.length'), 4);
+            expect(Ember.get(controller, 'content.length')).toEqual(11);
         });
 
         it('Can add many records using `addRecords` to an active Crossfilter', function() {
-            controller.addRecord({ name: 'Adam' });
-            controller.addRecord({ name: 'Baki' });
-            controller.addRecord({ name: 'Gosia' });
-            controller.addRecord({ name: 'Noemi' });
-            expect(Ember.get(controller, 'content.length'), 4);
+            controller.addRecords([{ name: 'Adam' }, { name: 'Baki' }]);
+            expect(Ember.get(controller, 'content.length')).toEqual(12);
+        });
+
+        it('Can de;ete one record from an active Crossfilter', function() {
+            controller.addRecord({ id: 50, name: 'Gosia' });
+            controller.addRecord({ id: 51, name: 'Noemi' });
+            controller.deleteRecord({ id: 50, name: 'Gosia' });
+            expect(Ember.get(controller, 'content.length')).toEqual(11);
+        });
+
+        it('Can delete many records using `deleteRecords` from an active Crossfilter', function() {
+            controller.addRecord({ id: 11, name: 'Adam' });
+            controller.addRecord({ id: 12, name: 'Baki' });
+            controller.addRecord({ id: 13, name: 'Gosia' });
+            controller.addRecord({ id: 14, name: 'Noemi' });
+            expect(Ember.get(controller, 'content.length')).toEqual(14);
+            controller.deleteRecord({ id: 2, name: 'Baki' });
+            expect(Ember.get(controller, 'content.length')).toEqual(13);
         });
 
     });

@@ -14,6 +14,14 @@ window.EmberCrossfilter = Ember.Mixin.create({
     _crossfilter: null,
 
     /**
+     * @property _deletedModels
+     * @type {Array}
+     * Holds a list of models that have been deleted.
+     * @private
+     */
+    _deletedModels: [],
+
+    /**
      * @property allowTiming
      * @type {Boolean}
      * Can be overridden by the class to allow for timing details to be output.
@@ -34,6 +42,48 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Create the Crossfilter.
         this._createCrossfilter();
+
+    },
+
+    /**
+     * @method deleteRecord
+     * @param record {Object}
+     * Deletes a record from the Crossfilter.
+     * @returns {Boolean}
+     */
+    deleteRecord: function addRecord(record) {
+        this._deletedModels.push(record);
+        this._applyContentChanges();
+        return true;
+    },
+
+    /**
+     * @method deleteRecords
+     * @param records {Array}
+     * Wrapper method for deleting items from the Crossfilter.
+     * @return {Number}
+     */
+    deleteRecords: function deleteRecords(records) {
+
+        if (!Array.isArray(records)) {
+            console.error('You must pass an array of records: use `deleteRecord` instead!');
+            return 0;
+        }
+
+        // Iterate over all of the records and delete each one individually.
+        for (var index = 0, count = records.length; index <= count; index++) {
+
+            if (!records.hasOwnProperty(index)) {
+                continue;
+            }
+
+            // Remove each record we come across!
+            var record = records[index];
+            this.deleteRecord(record);
+
+        }
+
+        return records.length;
 
     },
 
@@ -59,14 +109,17 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         var added = 0;
 
-        if (!Arary.isArray(records)) {
+        if (!Array.isArray(records)) {
             console.error('You must pass an array of records: use `addRecord` instead!');
-            return;
+            return 0;
         }
-
 
         // Iterate over all of the records and add each one individually.
         for (var index = 0, count = records.length; index <= count; index++) {
+
+            if (!records.hasOwnProperty(index)) {
+                continue;
+            }
 
             // Add each record we come across!
             var record = records[index];
@@ -446,7 +499,17 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Gather the default dimension, and apply the default dimension on the primary key.
         var defaultDimension    = Ember.get(this, '_dimensionDefault'),
-            content             = defaultDimension.filterAll().top(Infinity);
+            deletedModelIds     = this._deletedModels.map(function(model) {
+                if (typeof model === 'undefined') {
+                    return false;
+                }
+
+                return (model[Ember.get(this, 'primaryKey') || 'id']);
+            }),
+            deleted             = function(primaryKey) {
+                return ($.inArray(primaryKey, deletedModelIds) === -1);
+            },
+            content             = defaultDimension.filterFunction(deleted).top(Infinity);
 
         if (Ember.get(this, 'sort.sortProperty')) {
             // Sort the content if the user has defined the `sort` object.
@@ -494,7 +557,7 @@ window.EmberCrossfilter = Ember.Mixin.create({
         };
 
         // Define our default dimension, which is the primary key of the collection (id).
-        defineProperty.apply(this, ['_dimensionDefault', this.get('primaryKey') || 'id']);
+        defineProperty.apply(this, ['_dimensionDefault', Ember.get(this, 'primaryKey') || 'id']);
 
         for (var map in this.filterMap) {
 
