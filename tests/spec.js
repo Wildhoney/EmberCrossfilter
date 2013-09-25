@@ -1,4 +1,5 @@
 describe('Ember Crossfilter', function() {
+
     var controller;
 
     beforeEach(function() {
@@ -8,7 +9,6 @@ describe('Ember Crossfilter', function() {
             cutenessThreshold: 9,
 
             init: function() {
-                this._super();
                 Ember.set(this, 'content', [
                     { id: 1, name: 'Cecil', age: 4, colours: ['black', 'white', 'beige'], country: ['Russia'], cuteness: 11 },
                     { id: 2, name: 'Boris', age: 9, colours: ['black', 'white'], country: ['Italy'], cuteness: 5 },
@@ -21,6 +21,7 @@ describe('Ember Crossfilter', function() {
                     { id: 9, name: 'Simon', age: 15, colours: ['black', 'white', 'grey'], country: ['Britain', 'Russia'], cuteness: 5 },
                     { id: 10, name: 'Julia', age: 11, colours: ['black', 'grey', 'ginger'], country: ['Russia'], cuteness: 13 }
                 ]);
+                this._super();
             },
 
             filterMap: {
@@ -252,7 +253,7 @@ describe('Ember Crossfilter', function() {
             controller.addFilter('colour', 'grey');
             expect(Ember.get(controller, 'content.length')).toEqual(8);
         });
-//
+
         it('Can set multiple items using the OR operator with remove.', function() {
             controller.addFilter('colour', 'black');
             controller.addFilter('colour', 'grey');
@@ -274,7 +275,7 @@ describe('Ember Crossfilter', function() {
             expect(Ember.get(controller, 'content.length')).toEqual(12);
         });
 
-        it('Can de;ete one record from an active Crossfilter', function() {
+        it('Can delete one record from an active Crossfilter', function() {
             controller.addRecord({ id: 50, name: 'Gosia' });
             controller.addRecord({ id: 51, name: 'Noemi' });
             controller.deleteRecord({ id: 50, name: 'Gosia' });

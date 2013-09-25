@@ -397,6 +397,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
         var map         = this.filterMap[key],
             dimension   = '_dimension%@'.fmt(map.dimension.capitalize());
 
+        console.log(this.get('_dimensionCuteness'));
+
         // Use Crossfilter method to find the top/bottom.
         return this[dimension][crossfilterMethod](count || 1)[0];
 
