@@ -174,7 +174,7 @@ describe('Ember Crossfilter', function() {
         it('Can determine that no filters are active once cleared all.', function() {
             controller.addFilter('name', 'Cecil');
             controller.addFilter('minAge', 7);
-            controller.clearAllFilters();
+            controller.send('clearAllFilters');
             expect(Ember.get(controller, 'filterMap.name.active')).toEqual(false);
             expect(Ember.get(controller, 'filterMap.minAge.active')).toEqual(false);
         });
@@ -217,7 +217,7 @@ describe('Ember Crossfilter', function() {
             controller.addFilter('maxAge', 8);
             controller.addFilter('colour', 'black');
             controller.addFilter('colour', 'white');
-            controller.clearAllFilters();
+            controller.send('clearAllFilters');
             expect(Ember.get(controller, 'content.length')).toEqual(10);
         });
 
@@ -266,29 +266,29 @@ describe('Ember Crossfilter', function() {
     describe('Adding', function() {
 
         it('Can add one record to an active Crossfilter', function() {
-            controller.addRecord({ name: 'Adam' });
+            controller.send('addRecord', { name: 'Adam' });
             expect(Ember.get(controller, 'content.length')).toEqual(11);
         });
 
         it('Can add many records using `addRecords` to an active Crossfilter', function() {
-            controller.addRecords([{ name: 'Adam' }, { name: 'Baki' }]);
+            controller.send('addRecords', [{ name: 'Adam' }, { name: 'Baki' }]);
             expect(Ember.get(controller, 'content.length')).toEqual(12);
         });
 
         it('Can delete one record from an active Crossfilter', function() {
-            controller.addRecord({ id: 50, name: 'Gosia' });
-            controller.addRecord({ id: 51, name: 'Noemi' });
-            controller.deleteRecord({ id: 50, name: 'Gosia' });
+            controller.send('addRecord', { id: 50, name: 'Gosia' });
+            controller.send('addRecord', { id: 51, name: 'Noemi' });
+            controller.send('deleteRecord', { id: 50, name: 'Gosia' });
             expect(Ember.get(controller, 'content.length')).toEqual(11);
         });
 
         it('Can delete many records using `deleteRecords` from an active Crossfilter', function() {
-            controller.addRecord({ id: 11, name: 'Adam' });
-            controller.addRecord({ id: 12, name: 'Baki' });
-            controller.addRecord({ id: 13, name: 'Gosia' });
-            controller.addRecord({ id: 14, name: 'Noemi' });
+            controller.send('addRecord', { id: 11, name: 'Adam' });
+            controller.send('addRecord', { id: 12, name: 'Baki' });
+            controller.send('addRecord', { id: 13, name: 'Gosia' });
+            controller.send('addRecord', { id: 14, name: 'Noemi' });
             expect(Ember.get(controller, 'content.length')).toEqual(14);
-            controller.deleteRecord({ id: 2, name: 'Baki' });
+            controller.send('deleteRecord', { id: 2, name: 'Baki' });
             expect(Ember.get(controller, 'content.length')).toEqual(13);
         });
 
@@ -297,22 +297,22 @@ describe('Ember Crossfilter', function() {
     describe('Sorting', function() {
 
         it('Can sort content ascending by name.', function() {
-            controller.sortContent('name', true);
+            controller.send('sortContent', 'name', true);
             expect(Ember.get(controller, 'content.firstObject.name')).toEqual('Boris');
         });
 
         it('Can sort content descending by name.', function() {
-            controller.sortContent('name', false);
+            controller.send('sortContent', 'name', false);
             expect(Ember.get(controller, 'content.firstObject.name')).toEqual('Simon');
         });
 
         it('Can sort content ascending by cuteness level.', function() {
-            controller.sortContent('cuteness', true);
+            controller.send('sortContent', 'cuteness', true);
             expect(Ember.get(controller, 'content.firstObject.name')).toEqual('Jimmy');
         });
 
         it('Can sort content descending by cuteness level.', function() {
-            controller.sortContent('cuteness', false);
+            controller.send('sortContent', 'cuteness', false);
             expect(Ember.get(controller, 'content.firstObject.name')).toEqual('Masha');
         });
 
