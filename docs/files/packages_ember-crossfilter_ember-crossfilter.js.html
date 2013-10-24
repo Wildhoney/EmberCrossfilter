@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>packages/ember-crossfilter/ember-crossfilter.js - EmberCrossfilter</title>
+    <title>packages/ember-crossfilter/ember-crossfilter.js - ember-crossfilter</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -15,7 +15,7 @@
     <div id="hd" class="yui3-g header">
         <div class="yui3-u-3-4">
             
-                <h1><img src="../assets/css/logo.png" title="EmberCrossfilter"></h1>
+                <h1><img src="../assets/css/logo.png" title="ember-crossfilter"></h1>
             
         </div>
         <div class="yui3-u-1-4 version">
@@ -119,6 +119,176 @@ window.EmberCrossfilter = Ember.Mixin.create({
     allowDebugging: false,
 
     /**
+     * @property actions
+     * @type {Object}
+     */
+    actions: {
+
+        /**
+         * @method clearAllFilters
+         * Clears all of the filters that are currently active.
+         * @return {void}
+         */
+        clearAllFilters: function clearAllFilters() {
+
+            var start = new Date().getTime();
+
+            // Loop through all of the configured dimensions.
+            for (var key in this.filterMap) {
+
+                if (!this.filterMap.hasOwnProperty(key)) {
+                    continue;
+                }
+
+                // Find the map and the dimension by the current key.
+                var map         = this.filterMap[key],
+                    dimension   = this[&#x27;_dimension%@&#x27;.fmt(map.dimension.capitalize())];
+
+                // Clear the applied Crossfilter.
+                dimension.filterAll();
+
+                // Clear the &#x60;active&#x60; flag and reset its value.
+                Ember.set(map, &#x27;active&#x27;, false);
+                map.value = null;
+
+                if (this.isBooleanFilter(map)) {
+                    // If we&#x27;re dealing with a &#x60;filterAnd&#x60;/&#x60;filterOr&#x60;, then its default is 0.
+                    map.value = 0;
+                }
+
+            }
+
+            // Update the changes with all of the filters removed.
+            this._applyContentChanges();
+
+            if (this.allowDebugging) {
+                // Used for debugging purposes.
+                Ember.debug(&#x27;Clearing All: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+            }
+
+        },
+
+        /**
+         * @method addRecord
+         * @param record {Object}
+         * Adds a record to the Crossfilter.
+         * @returns {Boolean}
+         */
+        addRecord: function addRecord(record) {
+            this._crossfilter.add([record]);
+            this._applyContentChanges();
+            return true;
+        },
+
+        /**
+         * @method addRecords
+         * @param records {Array}
+         * Wrapper method for adding many records to the Crossfilter.
+         * @return {Number}
+         */
+        addRecords: function addRecords(records) {
+
+            var added = 0;
+
+            if (!Array.isArray(records)) {
+                console.error(&#x27;You must pass an array of records: use &#x60;addRecord&#x60; instead!&#x27;);
+                return 0;
+            }
+
+            // Iterate over all of the records and add each one individually.
+            for (var index = 0, count = records.length; index &lt;= count; index++) {
+
+                if (!records.hasOwnProperty(index)) {
+                    continue;
+                }
+
+                // Add each record we come across!
+                var record = records[index];
+                this.send(&#x27;addRecord&#x27;, record);
+                added++;
+
+            }
+
+            return added;
+
+        },
+
+        /**
+         * @method deleteRecord
+         * @param record {Object}
+         * Deletes a record from the Crossfilter.
+         * @returns {Boolean}
+         */
+        deleteRecord: function addRecord(record) {
+            this._deletedModels.push(record);
+            this._applyContentChanges();
+            return true;
+        },
+
+        /**
+         * @method deleteRecords
+         * @param records {Array}
+         * Wrapper method for deleting items from the Crossfilter.
+         * @return {Number}
+         */
+        deleteRecords: function deleteRecords(records) {
+
+            if (!Array.isArray(records)) {
+                console.error(&#x27;You must pass an array of records: use &#x60;deleteRecord&#x60; instead!&#x27;);
+                return 0;
+            }
+
+            // Iterate over all of the records and delete each one individually.
+            for (var index = 0, count = records.length; index &lt;= count; index++) {
+
+                if (!records.hasOwnProperty(index)) {
+                    continue;
+                }
+
+                // Remove each record we come across!
+                var record = records[index];
+                this.deleteRecord(record);
+
+            }
+
+            return records.length;
+
+        },
+
+        /**
+         * @method sortContent
+         * Sorts the content based on the property, and whether it should be ascending/descending.
+         * @param property {String}
+         * @param isAscending {Boolean}
+         * @return {void}
+         */
+        sortContent: function sortContent(property, isAscending) {
+
+            // Sort the content and then place it into the content array.
+            var content = this._sortedContent(Ember.get(this, &#x27;content&#x27;), property, isAscending),
+                start   = new Date().getTime();
+
+            Ember.set(this, &#x27;content&#x27;, content);
+
+            // Change the controller&#x27;s variables so that you can see what&#x27;s active.
+            Ember.assert(&#x27;In order to sort you must have a &#x60;sort&#x60; object defined.&#x27;, !!Ember.get(this, &#x27;sort&#x27;));
+            Ember.assert(&#x27;You must define &#x60;sortProperty&#x60; in your &#x60;sort&#x60; object.&#x27;, !!Ember.get(this, &#x27;sort.sortProperty&#x27;));
+            Ember.set(this, &#x27;sort.sortProperty&#x27;, property);
+            Ember.set(this, &#x27;sort.isAscending&#x27;, isAscending);
+
+            // Notify that we&#x27;ve rearranged the content, otherwise there will be no update.
+            this.notifyPropertyChange(&#x27;content&#x27;);
+
+            if (this.allowDebugging) {
+                // Debugging information.
+                Ember.debug(&#x27;Sorting: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
+            }
+
+        },
+
+    },
+
+    /**
      * @method init
      * Invoked when the controller is instantiated.
      * @constructor
@@ -132,93 +302,6 @@ window.EmberCrossfilter = Ember.Mixin.create({
 
         // Create the Crossfilter.
         this._createCrossfilter();
-
-    },
-
-    /**
-     * @method deleteRecord
-     * @param record {Object}
-     * Deletes a record from the Crossfilter.
-     * @returns {Boolean}
-     */
-    deleteRecord: function addRecord(record) {
-        this._deletedModels.push(record);
-        this._applyContentChanges();
-        return true;
-    },
-
-    /**
-     * @method deleteRecords
-     * @param records {Array}
-     * Wrapper method for deleting items from the Crossfilter.
-     * @return {Number}
-     */
-    deleteRecords: function deleteRecords(records) {
-
-        if (!Array.isArray(records)) {
-            console.error(&#x27;You must pass an array of records: use &#x60;deleteRecord&#x60; instead!&#x27;);
-            return 0;
-        }
-
-        // Iterate over all of the records and delete each one individually.
-        for (var index = 0, count = records.length; index &lt;= count; index++) {
-
-            if (!records.hasOwnProperty(index)) {
-                continue;
-            }
-
-            // Remove each record we come across!
-            var record = records[index];
-            this.deleteRecord(record);
-
-        }
-
-        return records.length;
-
-    },
-
-    /**
-     * @method addRecord
-     * @param record {Object}
-     * Adds a record to the Crossfilter.
-     * @returns {Boolean}
-     */
-    addRecord: function addRecord(record) {
-        this._crossfilter.add([record]);
-        this._applyContentChanges();
-        return true;
-    },
-
-    /**
-     * @method addRecords
-     * @param records {Array}
-     * Wrapper method for adding many records to the Crossfilter.
-     * @return {Number}
-     */
-    addRecords: function addRecords(records) {
-
-        var added = 0;
-
-        if (!Array.isArray(records)) {
-            console.error(&#x27;You must pass an array of records: use &#x60;addRecord&#x60; instead!&#x27;);
-            return 0;
-        }
-
-        // Iterate over all of the records and add each one individually.
-        for (var index = 0, count = records.length; index &lt;= count; index++) {
-
-            if (!records.hasOwnProperty(index)) {
-                continue;
-            }
-
-            // Add each record we come across!
-            var record = records[index];
-            this.addRecord(record);
-            added++;
-
-        }
-
-        return added;
 
     },
 
@@ -374,81 +457,6 @@ window.EmberCrossfilter = Ember.Mixin.create({
     },
 
     /**
-     * @method clearAllFilters
-     * Clears all of the filters that are currently active.
-     * @return {void}
-     */
-    clearAllFilters: function clearAllFilters() {
-
-        var start = new Date().getTime();
-
-        // Loop through all of the configured dimensions.
-        for (var key in this.filterMap) {
-
-            if (!this.filterMap.hasOwnProperty(key)) {
-                continue;
-            }
-
-            // Find the map and the dimension by the current key.
-            var map         = this.filterMap[key],
-                dimension   = this[&#x27;_dimension%@&#x27;.fmt(map.dimension.capitalize())];
-
-            // Clear the applied Crossfilter.
-            dimension.filterAll();
-
-            // Clear the &#x60;active&#x60; flag and reset its value.
-            Ember.set(map, &#x27;active&#x27;, false);
-            map.value = null;
-
-            if (this.isBooleanFilter(map)) {
-                // If we&#x27;re dealing with a &#x60;filterAnd&#x60;/&#x60;filterOr&#x60;, then its default is 0.
-                map.value = 0;
-            }
-
-        }
-
-        // Update the changes with all of the filters removed.
-        this._applyContentChanges();
-
-        if (this.allowDebugging) {
-            // Used for debugging purposes.
-            Ember.debug(&#x27;Clearing All: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
-        }
-
-    },
-
-    /**
-     * @method sortContent
-     * Sorts the content based on the property, and whether it should be ascending/descending.
-     * @param property {String}
-     * @param isAscending {Boolean}
-     * @return {void}
-     */
-    sortContent: function sortContent(property, isAscending) {
-
-        // Sort the content and then place it into the content array.
-        var content = this._sortedContent(Ember.get(this, &#x27;content&#x27;), property, isAscending),
-            start   = new Date().getTime();
-
-        Ember.set(this, &#x27;content&#x27;, content);
-
-        // Change the controller&#x27;s variables so that you can see what&#x27;s active.
-        Ember.assert(&#x27;In order to sort you must have a &#x60;sort&#x60; object defined.&#x27;, !!Ember.get(this, &#x27;sort&#x27;));
-        Ember.assert(&#x27;You must define &#x60;sortProperty&#x60; in your &#x60;sort&#x60; object.&#x27;, !!Ember.get(this, &#x27;sort.sortProperty&#x27;));
-        Ember.set(this, &#x27;sort.sortProperty&#x27;, property);
-        Ember.set(this, &#x27;sort.isAscending&#x27;, isAscending);
-
-        // Notify that we&#x27;ve rearranged the content, otherwise there will be no update.
-        this.notifyPropertyChange(&#x27;content&#x27;);
-
-        if (this.allowDebugging) {
-            // Debugging information.
-            Ember.debug(&#x27;Sorting: %@ millisecond(s)&#x27;.fmt(new Date().getTime() - start));
-        }
-
-    },
-
-    /**
      * @method top
      * Helper method to find the highest value.
      * @param property {String}
@@ -486,6 +494,8 @@ window.EmberCrossfilter = Ember.Mixin.create({
         // Find the map and the related dimension.
         var map         = this.filterMap[key],
             dimension   = &#x27;_dimension%@&#x27;.fmt(map.dimension.capitalize());
+
+        console.log(this.get(&#x27;_dimensionCuteness&#x27;));
 
         // Use Crossfilter method to find the top/bottom.
         return this[dimension][crossfilterMethod](count || 1)[0];
