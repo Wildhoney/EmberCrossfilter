@@ -13,5 +13,33 @@
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-jshint": "~0.6.0",
     "bower": "~1.2.6"
-  }
+  },
+  "description": "Instead of using Ember DataStore, EmberCrossfilter provides a basic architecture for creating Ember models with Crossfilter; which allows for much quicker sorting and filtering.",
+  "bugs": {
+    "url": "https://github.com/Wildhoney/EmberCrossfilter/issues"
+  },
+  "main": "Gruntfile.js",
+  "directories": {
+    "doc": "docs",
+    "example": "example",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "keywords": [
+    "crossfilter",
+    "ember",
+    "ember",
+    "crossfilter",
+    "ember",
+    "models",
+    "ember",
+    "sorting",
+    "ember",
+    "filtering",
+    "ember",
+    "datastore"
+  ],
+  "license": "BSD-2-Clause"
 }
