@@ -2,7 +2,7 @@ Ember Crossfilter 0.1.4
 ================
 <img src="https://travis-ci.org/Wildhoney/EmberCrossfilter.png?branch=master" />
 &nbsp;
-<img src="https://badge.fury.io/js/snapshot-js.png" />
+<img src="https://badge.fury.io/js/ember-crossfilter.png" />
 
 Install via npm: `npm install ember-crossfilter`
 
