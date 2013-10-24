@@ -1,4 +1,4 @@
-Ember Crossfilter 0.1.4
+Ember Crossfilter 0.1.5
 ================
 <img src="https://travis-ci.org/Wildhoney/EmberCrossfilter.png?branch=master" />
 &nbsp;
