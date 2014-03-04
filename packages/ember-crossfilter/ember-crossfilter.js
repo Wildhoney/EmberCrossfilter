@@ -562,7 +562,7 @@
                     configurable    : false,
                     writable        : false,
                     value           : this._crossfilter.dimension(function(d) {
-                        return d[property];
+                        return $ember.isNone( d[property] ) ? d.get(property) : d[property];
                     })
                 });
 
@@ -710,7 +710,7 @@
         _sortedContent: function _sortedContent(content, property, isAscending) {
 
             // Initialise the sorting using Crossfilter's `quicksort`.
-            var sortAlgorithm   = crossfilter.quicksort.by(function(d) { return d[property]; });
+            var sortAlgorithm   = crossfilter.quicksort.by(function(d) { return $ember.isNone( d[property] ) ? d.get(property) : d[property]; });
 
             // Sort the content using Crossfilter.
             var sorted = sortAlgorithm(content, 0, content.length);
@@ -858,5 +858,5 @@
         }
 
     });
-    
+
 })(window, window.Ember);
