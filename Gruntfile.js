@@ -33,10 +33,10 @@ module.exports = function(grunt) {
                 src: 'packages/ember-crossfilter/ember-crossfilter.js',
                 options: {
                     specs: 'tests/spec.js',
-                    helpers: ['bower_components/jquery/jquery.js',
-                              'bower_components/handlebars/handlebars.js',
-                              'bower_components/ember/ember.js',
-                              'bower_components/crossfilter/crossfilter.js'
+                    helpers: ['example/js/vendor/jquery/jquery.js',
+                              'example/js/vendor/handlebars/handlebars.js',
+                              'example/js/vendor/ember/ember.js',
+                              'example/js/vendor/crossfilter/crossfilter.js'
                     ]
                 }
             }
@@ -45,11 +45,10 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-yuidoc');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
 
     grunt.registerTask('test', ['jshint', 'jasmine']);
     grunt.registerTask('build', ['uglify']);
-    grunt.registerTask('default', ['jshint', 'jasmine', 'yuidoc', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'jasmine', 'uglify']);
 
 };
