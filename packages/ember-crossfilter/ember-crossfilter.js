@@ -733,7 +733,7 @@
 
 
             // Sort the content using Crossfilter.
-            var sorted = sortAlgorithm(content, 0, content.length);
+            var sorted = sortAlgorithm(content, 0, $ember.get(content, 'length'));
 
             if (!isAscending) {
                 // If we want it in descending order, then we need to reverse the array.
