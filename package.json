@@ -28,18 +28,12 @@
     "test": "grunt test"
   },
   "keywords": [
-    "crossfilter",
-    "ember",
-    "ember",
-    "crossfilter",
-    "ember",
-    "models",
-    "ember",
-    "sorting",
-    "ember",
-    "filtering",
-    "ember",
-    "datastore"
+    "crossfilter ember",
+    "ember crossfilter",
+    "ember models",
+    "ember sorting",
+    "ember filtering",
+    "ember datastore"
   ],
   "license": "BSD-2-Clause"
 }
