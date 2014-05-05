@@ -430,7 +430,7 @@
 
             // Checks whether we have a defined controller, and/or no content.
             var hasDefinedCrossfilter   = !!this._crossfilter,
-                hasNoContent            = !content.length;
+                hasNoContent            = !$ember.get(this, 'content.length');
 
             // If we don't want have any content yet, or a defined Crossfilter, then either
             // the content hasn't been loaded yet, or we've already created the Crossfilter.
@@ -733,7 +733,7 @@
 
 
             // Sort the content using Crossfilter.
-            var sorted = sortAlgorithm(content, 0, content.length);
+            var sorted = sortAlgorithm(content, 0, $ember.get(content, 'length'));
 
             if (!isAscending) {
                 // If we want it in descending order, then we need to reverse the array.
