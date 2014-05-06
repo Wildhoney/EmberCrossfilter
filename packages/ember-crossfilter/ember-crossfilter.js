@@ -564,7 +564,7 @@
                     value           : this._crossfilter.dimension(function(d) {
                         if ($ember.isNone(d[property])){
 
-                            if (d.hasOwnProperty('get')) {
+                            if ('get' in d) {
                                 return d.get(property);
                             } else {
                                 return null;
@@ -721,7 +721,7 @@
             var sortAlgorithm   = crossfilter.quicksort.by(function(d) {
                          if ($ember.isNone(d[property])){
 
-                            if (d.hasOwnProperty('get')) {
+                            if ('get' in d) {
                                 return d.get(property);
                             } else {
                                 return null;
