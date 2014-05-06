@@ -176,11 +176,22 @@
              */
             sortContent: function sortContent(property, isAscending) {
 
-                // Sort the content and then place it into the content array.
-                var content = this._sortedContent($ember.get(this, 'content'), property, isAscending),
+                var content = $ember.get(this, 'content'),
+                    isProxy = content.hasOwnProperty('content'),
                     start   = new $window.Date().getTime();
 
-                $ember.set(this, 'content', content);
+                if (isProxy) {
+                    content = $ember.get(content, 'content');
+                }
+
+                // Sort the content and then place it into the content array.
+                content = this._sortedContent(content, property, isAscending);
+
+                if (isProxy) {
+                    $ember.set(this, 'content.content', content);
+                } else {
+                    $ember.set(this, 'content', content);
+                }
 
                 // Change the controller's variables so that you can see what's active.
                 $ember.assert('In order to sort you must have a `sort` object defined.', !!$ember.get(this, 'sort'));
@@ -208,6 +219,8 @@
         init: function init() {
 
             this._super();
+
+            console.log($ember.get(this, 'content'));
 
             // Add the observer to create the Crossfilter when we have some content.
             $ember.addObserver(this, 'content.length', this, '_createCrossfilter');
@@ -428,6 +441,12 @@
             // Create the Crossfilter, and then create the dimensions.
             var content = $ember.get(this, 'content');
 
+            var isProxy = content.hasOwnProperty('content');
+
+            if (isProxy) {
+                content = $ember.get(content, 'content');
+            }
+
             // Checks whether we have a defined controller, and/or no content.
             var hasDefinedCrossfilter   = !!this._crossfilter,
                 hasNoContent            = !$ember.get(this, 'content.length');
@@ -453,7 +472,11 @@
                     sortAscending   = $ember.get(this, 'sort.isAscending');
 
                 // If we have a sort.sortProperty then we can sort the content straight away.
-                $ember.set(this, 'content', this._sortedContent(content, sortProperty, sortAscending));
+                if (isProxy) {
+                    $ember.set(this, 'content.content', this._sortedContent(content, sortProperty, sortAscending));
+                } else {
+                    $ember.set(this, 'content', this._sortedContent(content, sortProperty, sortAscending));
+                }
 
             }
 
@@ -528,8 +551,14 @@
                 content = this._sortedContent(content, $ember.get(this, 'sort.sortProperty'), $ember.get(this, 'sort.isAscending'));
             }
 
+            var isProxy = $ember.get(this, 'content').hasOwnProperty('content');
+
             // Finally we can update the content of the controller.
-            $ember.set(this, 'content', content);
+            if (isProxy) {
+                $ember.set(this, 'content.content', content);
+            } else {
+                $ember.set(this, 'content', content);
+            }
 
         },
 
@@ -564,7 +593,7 @@
                     value           : this._crossfilter.dimension(function(d) {
                         if ($ember.isNone(d[property])){
 
-                            if (d.hasOwnProperty('get')) {
+                            if ('get' in d) {
                                 return d.get(property);
                             } else {
                                 return null;
@@ -721,7 +750,7 @@
             var sortAlgorithm   = crossfilter.quicksort.by(function(d) {
                          if ($ember.isNone(d[property])){
 
-                            if (d.hasOwnProperty('get')) {
+                            if ('get' in d) {
                                 return d.get(property);
                             } else {
                                 return null;
